@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(node -e ' *)",
+      "WebFetch(domain:stockmaj.github.io)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh repo *)"
+    ]
+  }
+}

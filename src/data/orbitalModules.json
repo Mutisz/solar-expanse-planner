@@ -1,0 +1,193 @@
+[
+  {
+    "name": "City Station",
+    "type": "Habitation",
+    "buildCost": {
+      "Metals": 1000,
+      "Rare Metals": 200,
+      "Supplies": 100,
+      "Glass": 400
+    },
+    "buildTime": 1200,
+    "role": "Crew 20000",
+    "workers": "—",
+    "energy": "—",
+    "description": "Vast, spinning ring with room for thousands of people to live."
+  },
+  {
+    "name": "Rotating Habitat",
+    "type": "Habitation",
+    "buildCost": {
+      "Metals": 200,
+      "Rare Metals": 50,
+      "Supplies": 20
+    },
+    "buildTime": 120,
+    "role": "Crew 100",
+    "workers": "—",
+    "energy": "—",
+    "description": "In absence of gravity, the habitat spins to compensate with centrifugal force. While providing a comfortable illusion of 1g, it requires much larger and complicated construction."
+  },
+  {
+    "name": "Rotating Station",
+    "type": "Habitation",
+    "buildCost": {
+      "Metals": 400,
+      "Rare Metals": 100,
+      "Glass": 200,
+      "Supplies": 40
+    },
+    "buildTime": 450,
+    "role": "Crew 1000",
+    "workers": "—",
+    "energy": "—",
+    "description": "A rotating wheel style station with room for habitation, work, and all aspects of deep space life."
+  },
+  {
+    "name": "Orbital Gas Extractor",
+    "type": "Mining",
+    "buildCost": {
+      "Alloy": 150,
+      "Polymers": 20,
+      "Electronics": 10
+    },
+    "buildTime": 120,
+    "role": "—",
+    "workers": "—",
+    "energy": "—",
+    "description": "Extracts gases from planetary atmosphere. Can also extract gases from gas giants."
+  },
+  {
+    "name": "Telescope",
+    "type": "Other",
+    "buildCost": {
+      "Alloy": 10,
+      "Glass": 30,
+      "Electronics": 5
+    },
+    "buildTime": 30,
+    "role": "—",
+    "workers": "—",
+    "energy": "—",
+    "description": "Searches distant objects for resources."
+  },
+  {
+    "name": "Orbital Power Receiver",
+    "type": "Power",
+    "buildCost": {
+      "Glass": 130,
+      "Alloy": 50,
+      "Rare Metals": 20
+    },
+    "buildTime": 800,
+    "role": "Power / storage",
+    "workers": "—",
+    "energy": "—",
+    "description": "Receives power in orbit."
+  },
+  {
+    "name": "Orbital Power Station",
+    "type": "Power",
+    "buildCost": {
+      "Glass": 120,
+      "Alloy": 30
+    },
+    "buildTime": 200,
+    "role": "Power / storage",
+    "workers": "—",
+    "energy": "—",
+    "description": "Generates power in orbit and transfers it to receivers."
+  },
+  {
+    "name": "Orbital Construction",
+    "type": "Production",
+    "buildCost": {
+      "Alloy": 100,
+      "Electronics": 10
+    },
+    "buildTime": 15,
+    "role": "Construction",
+    "workers": "—",
+    "energy": "—",
+    "description": "Allows construction of orbital facilities."
+  },
+  {
+    "name": "Orbital Shipyard",
+    "type": "Production",
+    "buildCost": {
+      "Alloy": 150,
+      "Polymers": 50,
+      "Electronics": 25
+    },
+    "buildTime": 150,
+    "role": "Spacecraft assembly",
+    "workers": "—",
+    "energy": "—",
+    "description": "Allows construction of advanced spacecraft in orbit."
+  },
+  {
+    "name": "Orbital Fuel Refinery",
+    "type": "Production",
+    "buildCost": {
+      "Metals": 10,
+      "Rare Metals": 30
+    },
+    "buildTime": 100,
+    "role": "Refiner",
+    "workers": "—",
+    "energy": "—",
+    "description": "Turns Water into Chemical Fuel."
+  },
+  {
+    "name": "Interstellar Vehicle Assembly",
+    "type": "Production",
+    "buildCost": {
+      "Alloy": 200
+    },
+    "buildTime": 90,
+    "role": "—",
+    "workers": "—",
+    "energy": "—",
+    "description": "Construction site of a generation ship to travel between the stars."
+  },
+  {
+    "name": "Orbital Magnetosphere Generator",
+    "type": "Terraformation",
+    "buildCost": {
+      "Alloy": 30000
+    },
+    "buildTime": 1600,
+    "role": "—",
+    "workers": "—",
+    "energy": "228",
+    "description": "Decreases radiation on the object’s surface."
+  },
+  {
+    "name": "Orbital Mirror",
+    "type": "Terraformation",
+    "buildCost": {
+      "Polymers": 2000,
+      "Glass": 27000,
+      "Alloy": 1000
+    },
+    "buildTime": 1600,
+    "role": "Mirror/Shade 0.216",
+    "workers": "—",
+    "energy": "—",
+    "description": "Increases the temperature on the object it’s aimed at"
+  },
+  {
+    "name": "Orbital Shade",
+    "type": "Terraformation",
+    "buildCost": {
+      "Alloy": 13000,
+      "Polymers": 6000,
+      "Exotic Alloys": 1000
+    },
+    "buildTime": 1600,
+    "role": "Mirror/Shade −0.006",
+    "workers": "—",
+    "energy": "—",
+    "description": "Decreases the temperature on the object it’s orbiting"
+  }
+]

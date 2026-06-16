@@ -1,0 +1,365 @@
+[
+  {
+    "name": "Sparrow",
+    "propulsionType": "Chemical rockets",
+    "payload": "10",
+    "reusable": "No",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Sparrow",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 50
+    },
+    "buildTime": 50,
+    "description": "Cheap, simple, single use small Launch Vehicle."
+  },
+  {
+    "name": "Al-Ice Rocket",
+    "propulsionType": "Chemical rockets",
+    "payload": "40",
+    "reusable": "No",
+    "crew": "Yes",
+    "maxG": "≤ 1.8 G",
+    "launchCost": "Al-Ice Rocket",
+    "maintenance": "0",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 20,
+      "Water": 20
+    },
+    "buildTime": 25,
+    "description": "Aluminium-Ice LV. Low efficiency but easily assembled from local resources."
+  },
+  {
+    "name": "Falcon",
+    "propulsionType": "Chemical rockets",
+    "payload": "42",
+    "reusable": "Partial",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Falcon",
+    "maintenance": "600",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 80,
+      "Rare Metals": 15
+    },
+    "buildTime": 90,
+    "description": "Reusable Medium Launch Vehicle"
+  },
+  {
+    "name": "Kestrel",
+    "propulsionType": "Chemical rockets",
+    "payload": "64",
+    "reusable": "No",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Kestrel",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 100
+    },
+    "buildTime": 70,
+    "description": "Medium Launch Vehicle."
+  },
+  {
+    "name": "Al-Ice Rocket (Heavy)",
+    "propulsionType": "Chemical rockets",
+    "payload": "100",
+    "reusable": "No",
+    "crew": "Yes",
+    "maxG": "≤ 1.8 G",
+    "launchCost": "Al-Ice Rocket (Heavy)",
+    "maintenance": "0",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 50,
+      "Water": 50
+    },
+    "buildTime": 50,
+    "description": "Aluminium-Ice LV. Low efficiency but easily assembled from local resources. Larger variant for heavy payloads."
+  },
+  {
+    "name": "Hawk",
+    "propulsionType": "Chemical rockets",
+    "payload": "200",
+    "reusable": "No",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Hawk",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 120
+    },
+    "buildTime": 120,
+    "description": "Old but reliable super heavy launch vehicle."
+  },
+  {
+    "name": "Eagle",
+    "propulsionType": "Chemical rockets",
+    "payload": "800",
+    "reusable": "Partial",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Eagle",
+    "maintenance": "600",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 250,
+      "Rare Metals": 25
+    },
+    "buildTime": 110,
+    "description": "Reusable Super Heavy-class Launch Vehicle"
+  },
+  {
+    "name": "Albatross",
+    "propulsionType": "Chemical rockets",
+    "payload": "1800",
+    "reusable": "No",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Albatross",
+    "maintenance": "600",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 800
+    },
+    "buildTime": 180,
+    "description": ""
+  },
+  {
+    "name": "Condor",
+    "propulsionType": "Chemical rockets",
+    "payload": "8000",
+    "reusable": "Partial",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Condor",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 500,
+      "Polymers": 500,
+      "Rare Metals": 100
+    },
+    "buildTime": 160,
+    "description": "Advanced chemical launch vehicle powered by polynitrogen fuel."
+  },
+  {
+    "name": "Pelican",
+    "propulsionType": "Nuclear-thermal rockets",
+    "payload": "1200",
+    "reusable": "Partial",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Pelican",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Metals": 400,
+      "Rare Metals": 50,
+      "Fissiles": 40
+    },
+    "buildTime": 140,
+    "description": "Nuclear-boosted Single-Stage-To-Orbit (SSTO) launch vehicle."
+  },
+  {
+    "name": "Magpie",
+    "propulsionType": "Nuclear-thermal rockets",
+    "payload": "4000",
+    "reusable": "Partial",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Magpie",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Alloy": 500,
+      "Rare Metals": 100,
+      "Fissiles": 100
+    },
+    "buildTime": 180,
+    "description": "Powerful launch vehicle using gas core nuclear engines."
+  },
+  {
+    "name": "Teratorn",
+    "propulsionType": "Nuclear-thermal rockets",
+    "payload": "20000",
+    "reusable": "Partial",
+    "crew": "Yes",
+    "maxG": "Any",
+    "launchCost": "Teratorn",
+    "maintenance": "300",
+    "workers": "",
+    "energy": "",
+    "launchBonus": "",
+    "prereq": "",
+    "buildCost": {
+      "Alloy": 1000,
+      "Exotic Alloys": 100,
+      "Fissiles": 200
+    },
+    "buildTime": 360,
+    "description": "The largest and most powerful launch vehicle devised, the Teratorn can lift thousands of tons and quickly come back to lift another payload."
+  },
+  {
+    "name": "Launch Pad",
+    "propulsionType": "Alternative launch methods",
+    "payload": "",
+    "reusable": "",
+    "crew": "",
+    "maxG": "",
+    "launchCost": "",
+    "workers": "—",
+    "energy": "—",
+    "maintenance": "600",
+    "launchBonus": "−10% launch cost",
+    "prereq": "Launch Pad",
+    "buildCost": {
+      "Metals": 120
+    },
+    "buildTime": 90,
+    "description": "Organized launch infrastructure, reduces launch vehicle launch cost by 10%."
+  },
+  {
+    "name": "Rotary Launcher",
+    "propulsionType": "Alternative launch methods",
+    "payload": "",
+    "reusable": "",
+    "crew": "",
+    "maxG": "",
+    "launchCost": "",
+    "workers": "20",
+    "energy": "1.5",
+    "maintenance": "1.5k",
+    "launchBonus": "−10% in plan-mission",
+    "prereq": "Spin-Launch",
+    "buildCost": {
+      "Alloy": 300,
+      "Electronics": 20
+    },
+    "buildTime": 180,
+    "description": "Launches payloads by utilizing extremely high rotary acceleration."
+  },
+  {
+    "name": "Stationary Mass Driver",
+    "propulsionType": "Alternative launch methods",
+    "payload": "",
+    "reusable": "",
+    "crew": "",
+    "maxG": "",
+    "launchCost": "",
+    "workers": "—",
+    "energy": "2.5",
+    "maintenance": "1.5k",
+    "launchBonus": "−10% in plan-mission",
+    "prereq": "Mass Driver",
+    "buildCost": {
+      "Alloy": 300,
+      "Electronics": 40,
+      "Rare Metals": 50
+    },
+    "buildTime": 800,
+    "description": "Set of superconducting electromagnetic accelerators, able to launch payloads directly into orbit."
+  },
+  {
+    "name": "Magnetic Launch Rails",
+    "propulsionType": "Alternative launch methods",
+    "payload": "",
+    "reusable": "",
+    "crew": "",
+    "maxG": "",
+    "launchCost": "",
+    "workers": "20",
+    "energy": "2.5",
+    "maintenance": "1.5k",
+    "launchBonus": "−10% in plan-mission",
+    "prereq": "Magnetic Launch Rails",
+    "buildCost": {
+      "Alloy": 300,
+      "Electronics": 200,
+      "Rare Metals": 100
+    },
+    "buildTime": 800,
+    "description": "Long ramp built atop suitable terrain, outfitted with MagLev tracks to accelerate payloads into space."
+  },
+  {
+    "name": "Electromagnetic Catapult",
+    "propulsionType": "Alternative launch methods",
+    "payload": "",
+    "reusable": "",
+    "crew": "",
+    "maxG": "",
+    "launchCost": "",
+    "workers": "20",
+    "energy": "2.5",
+    "maintenance": "1.5k",
+    "launchBonus": "+10 payload option",
+    "prereq": "Electromagnetic Catapult",
+    "buildCost": {
+      "Alloy": 500,
+      "Electronics": 100,
+      "Rare Metals": 300
+    },
+    "buildTime": 800,
+    "description": "Larger and more powerful mass driver capable of launching payloads on interplanetary trajectories by itself."
+  },
+  {
+    "name": "Space Elevator",
+    "propulsionType": "Alternative launch methods",
+    "payload": "",
+    "reusable": "",
+    "crew": "",
+    "maxG": "",
+    "launchCost": "",
+    "workers": "50",
+    "energy": "4",
+    "maintenance": "3k",
+    "launchBonus": "−10% in plan-mission",
+    "prereq": "Space Elevator",
+    "buildCost": {
+      "Polymers": 100000,
+      "Exotic Alloys": 10000,
+      "Alloy": 40000
+    },
+    "buildTime": 2200,
+    "description": "A supermaterial cable stretching from the surface to geostationary orbit. Allows reaching space just by riding an elevator up the cable. Uses an asteroid as a counterweight; once anchored, all resources from the asteroid will become available."
+  }
+]

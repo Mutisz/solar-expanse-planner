@@ -1,0 +1,411 @@
+[
+  {
+    "name": "Iris",
+    "propulsionType": "Chemical Propulsion",
+    "mass": "1",
+    "cargo": "2",
+    "fuel": "20",
+    "thrust": "20 kN",
+    "exhaustV": "3.7 km/s",
+    "lifeSupport": "No",
+    "reusable": "No",
+    "builtAt": "Surface",
+    "requiresLV": "Any body",
+    "buildCost": {
+      "Alloy": 20
+    },
+    "buildTime": 30,
+    "description": "Unlock: Iris Simple, disposable low-mass craft for delivering probes and modules to distant objects."
+  },
+  {
+    "name": "Centaur",
+    "propulsionType": "Chemical Propulsion",
+    "mass": "25",
+    "cargo": "10",
+    "fuel": "165",
+    "thrust": "—",
+    "exhaustV": "—",
+    "lifeSupport": "No",
+    "reusable": "No",
+    "builtAt": "Surface",
+    "requiresLV": "Any body",
+    "buildCost": {},
+    "buildTime": 150,
+    "description": "Centaur"
+  },
+  {
+    "name": "Argo",
+    "propulsionType": "Chemical Propulsion",
+    "mass": "80",
+    "cargo": "400",
+    "fuel": "1000",
+    "thrust": "9.6 MN",
+    "exhaustV": "5.4 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Surface",
+    "requiresLV": "Earth only",
+    "buildCost": {
+      "Alloy": 240,
+      "Polymers": 60
+    },
+    "buildTime": 120,
+    "description": "Large and advanced chemical spacecraft, capable of taking off from planets on its own."
+  },
+  {
+    "name": "Stratos",
+    "propulsionType": "Chemical Propulsion",
+    "mass": "80",
+    "cargo": "100",
+    "fuel": "1000",
+    "thrust": "4.8 MN",
+    "exhaustV": "3.7 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Surface",
+    "requiresLV": "Earth only",
+    "buildCost": {
+      "Alloy": 120,
+      "Rare Metals": 20,
+      "Polymers": 20
+    },
+    "buildTime": 120,
+    "description": "Unlock: Stratos Reusable upper stage, capable of taking off from other planets."
+  },
+  {
+    "name": "Metis",
+    "propulsionType": "Electric Propulsion",
+    "mass": "0.7",
+    "cargo": "150",
+    "fuel": "20",
+    "thrust": "—",
+    "exhaustV": "—",
+    "lifeSupport": "No",
+    "reusable": "Yes",
+    "builtAt": "Surface",
+    "requiresLV": "Any body",
+    "buildCost": {
+      "Alloy": 3
+    },
+    "buildTime": 30,
+    "description": "Lightweight deep-space exploration craft designed for long-duration travel through carefully planned gravity-assist maneuvers"
+  },
+  {
+    "name": "Selene",
+    "propulsionType": "Electric Propulsion",
+    "mass": "5",
+    "cargo": "5",
+    "fuel": "60",
+    "thrust": "40 N",
+    "exhaustV": "20.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Surface",
+    "requiresLV": "Any body",
+    "buildCost": {
+      "Alloy": 30,
+      "Electronics": 5
+    },
+    "buildTime": 50,
+    "description": "Unlock: Selene Light craft with an electric engine for moving probes and small cargo to distant objects."
+  },
+  {
+    "name": "Athena",
+    "propulsionType": "Electric Propulsion",
+    "mass": "40",
+    "cargo": "500",
+    "fuel": "180",
+    "thrust": "240 N",
+    "exhaustV": "60.0 km/s",
+    "lifeSupport": "No",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 100,
+      "Electronics": 40,
+      "Fissiles": 10
+    },
+    "buildTime": 150,
+    "description": "Unlock: Athena Advanced electric spacecraft, designed for slow but efficient travel."
+  },
+  {
+    "name": "Hermes",
+    "propulsionType": "Electric Propulsion",
+    "mass": "60",
+    "cargo": "300",
+    "fuel": "100",
+    "thrust": "160 N",
+    "exhaustV": "20.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 100,
+      "Rare Metals": 40,
+      "Electronics": 25,
+      "Fissiles": 10
+    },
+    "buildTime": 150,
+    "description": "Unlock: Hermes Long-distance interplanetary craft, incapable of landing."
+  },
+  {
+    "name": "Ariane",
+    "propulsionType": "Nuclear Propulsion",
+    "mass": "50",
+    "cargo": "2500",
+    "fuel": "500",
+    "thrust": "1.0 MN",
+    "exhaustV": "100.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 150,
+      "Exotic Alloys": 50,
+      "Fissiles": 100,
+      "Electronics": 40
+    },
+    "buildTime": 150,
+    "description": "Unlock: Ariane Most powerful nuclear thermal spacecraft, powered by a Nuclear Lightbulb” engine.”"
+  },
+  {
+    "name": "Hephaistos",
+    "propulsionType": "Nuclear Propulsion",
+    "mass": "50",
+    "cargo": "1500",
+    "fuel": "500",
+    "thrust": "850 kN",
+    "exhaustV": "30.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 100,
+      "Electronics": 25,
+      "Fissiles": 50
+    },
+    "buildTime": 150,
+    "description": "Unlock: Hephaistos Nuclear thermal electric spacecraft, capable of significantly cutting down travel time between planets."
+  },
+  {
+    "name": "Prometheus",
+    "propulsionType": "Nuclear Propulsion",
+    "mass": "50",
+    "cargo": "800",
+    "fuel": "500",
+    "thrust": "1.0 MN",
+    "exhaustV": "10.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 100,
+      "Fissiles": 50,
+      "Rare Metals": 30
+    },
+    "buildTime": 150,
+    "description": "Unlock: Prometheus First true nuclear rocket, more than double the efficiency of chemical rockets while still maintaining high thrust."
+  },
+  {
+    "name": "Cronos",
+    "propulsionType": "Nuclear Propulsion",
+    "mass": "700",
+    "cargo": "1000",
+    "fuel": "1500",
+    "thrust": "42.0 MN",
+    "exhaustV": "40.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Surface",
+    "requiresLV": "Earth only",
+    "buildCost": {
+      "Alloy": 400,
+      "Polymers": 400,
+      "Fissiles": 200
+    },
+    "buildTime": 150,
+    "description": "Unlock: Cronos Single-Stage-To-Orbit spacecraft powered by a closed-cycle gas core nuclear thermal rocket. A set of seven engines lets this colossus lift itself and a kiloton of payload into earth orbit and beyond."
+  },
+  {
+    "name": "Atlas",
+    "propulsionType": "Fusion Propulsion",
+    "mass": "50",
+    "cargo": "10000",
+    "fuel": "500",
+    "thrust": "875.5 MN",
+    "exhaustV": "4000.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Exotic Alloys": 1000,
+      "Helium-3": 500,
+      "Electronics": 200,
+      "Alloy": 4000
+    },
+    "buildTime": 360,
+    "description": "Unlock: Atlas Enormous spacecraft able to move entire asteroids."
+  },
+  {
+    "name": "Zeus",
+    "propulsionType": "Fusion Propulsion",
+    "mass": "50",
+    "cargo": "20000",
+    "fuel": "500",
+    "thrust": "40.0 MN",
+    "exhaustV": "11000.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Exotic Alloys": 500,
+      "Polymers": 500,
+      "Electronics": 100,
+      "Helium-3": 400
+    },
+    "buildTime": 150,
+    "description": "Unlock: Zeus Operating at the limits of theoretical performance of fusion spacecraft, the Zeus can fly farther and faster than any other."
+  },
+  {
+    "name": "Sirius",
+    "propulsionType": "Fusion Propulsion",
+    "mass": "50",
+    "cargo": "10000",
+    "fuel": "500",
+    "thrust": "9.8 MN",
+    "exhaustV": "2400.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Exotic Alloys": 200,
+      "Polymers": 400,
+      "Electronics": 50,
+      "Helium-3": 150
+    },
+    "buildTime": 150,
+    "description": "Unlock: Sirius Advanced fusion spacecraft."
+  },
+  {
+    "name": "Nike",
+    "propulsionType": "Fusion Propulsion",
+    "mass": "100",
+    "cargo": "5000",
+    "fuel": "5000",
+    "thrust": "6.0 MN",
+    "exhaustV": "1000.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 300,
+      "Exotic Alloys": 100,
+      "Electronics": 50,
+      "Helium-3": 50
+    },
+    "buildTime": 180,
+    "description": "Unlock: Nike First generation fusion spacecraft, with efficiency unmatched by previous designs."
+  },
+  {
+    "name": "Interstellar Ship",
+    "propulsionType": "Fusion Propulsion",
+    "mass": "5000",
+    "cargo": "200000",
+    "fuel": "500",
+    "thrust": "40.0 MN",
+    "exhaustV": "11000.0 km/s",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Alloy": 500000,
+      "Exotic Alloys": 500000,
+      "Electronics": 50000
+    },
+    "buildTime": 150,
+    "description": "Interstellar generation ship, capable of travelling between the stars."
+  },
+  {
+    "name": "Zephyr",
+    "propulsionType": "Solar Sails",
+    "mass": "1",
+    "cargo": "80",
+    "fuel": "1000",
+    "thrust": "1 N",
+    "exhaustV": "1.0 km/s",
+    "lifeSupport": "No",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Rare Metals": 200,
+      "Electronics": 25
+    },
+    "buildTime": 120,
+    "description": "Unlock: Plasma Magnet Sail Plasma Magnet Sail, unlimited by distance or fuel. It can travel anywhere, given enough time."
+  },
+  {
+    "name": "Talos",
+    "propulsionType": "Solar Sails",
+    "mass": "1",
+    "cargo": "120",
+    "fuel": "1000",
+    "thrust": "1 N",
+    "exhaustV": "1.0 km/s",
+    "lifeSupport": "No",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Polymers": 250,
+      "Alloy": 50
+    },
+    "buildTime": 120,
+    "description": "Unlock: Reflective Materials Improved solar sail with higher capacity."
+  },
+  {
+    "name": "Daedalus",
+    "propulsionType": "Solar Sails",
+    "mass": "1",
+    "cargo": "20",
+    "fuel": "1000",
+    "thrust": "1 N",
+    "exhaustV": "1.0 km/s",
+    "lifeSupport": "No",
+    "reusable": "Yes",
+    "builtAt": "Orbit",
+    "requiresLV": "Built in orbit",
+    "buildCost": {
+      "Polymers": 120,
+      "Metals": 20
+    },
+    "buildTime": 120,
+    "description": "Unlock: Solar Sails A simple photon kite sail. Needs no fuel, but limited in range."
+  },
+  {
+    "name": "Orbital Payload Container",
+    "propulsionType": "Other",
+    "mass": "0",
+    "cargo": "800",
+    "fuel": "0",
+    "thrust": "—",
+    "exhaustV": "—",
+    "lifeSupport": "Yes",
+    "reusable": "Yes",
+    "builtAt": "—",
+    "requiresLV": "—",
+    "buildCost": {},
+    "buildTime": 0,
+    "description": "Container for cargo deployed to orbit."
+  }
+]
