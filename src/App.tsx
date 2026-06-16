@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import GroundFacilitiesTable from './components/GroundFacilitiesTable';
 import LaunchVehiclesTable from './components/LaunchVehiclesTable';
@@ -5,18 +6,24 @@ import OrbitalModulesTable from './components/OrbitalModulesTable';
 import SpacecraftTable from './components/SpacecraftTable';
 import SummaryTable from './components/SummaryTable';
 import TransportableModulesTable from './components/TransportableModulesTable';
-import groundFacilitiesData from './data/groundFacilities.json';
-import launchVehiclesData from './data/launchVehicles.json';
-import orbitalModulesData from './data/orbitalModules.json';
-import spacecraftData from './data/spacecraft.json';
-import transportableModulesData from './data/transportableModules.json';
+import versionData from './data/version.json';
 import type { GroundFacility, LaunchVehicle, OrbitalModule, Spacecraft, TransportableModule } from './types';
 
-const spacecraft = spacecraftData as unknown as Spacecraft[];
-const launchVehicles = launchVehiclesData as unknown as LaunchVehicle[];
-const groundFacilities = groundFacilitiesData as unknown as GroundFacility[];
-const orbitalModules = orbitalModulesData as unknown as OrbitalModule[];
-const transportableModules = transportableModulesData as unknown as TransportableModule[];
+const spacecraftGlob = import.meta.glob<Spacecraft[]>('./data/*/spacecraft.json', { import: 'default' });
+const launchVehiclesGlob = import.meta.glob<LaunchVehicle[]>('./data/*/launchVehicles.json', { import: 'default' });
+const groundFacilitiesGlob = import.meta.glob<GroundFacility[]>('./data/*/groundFacilities.json', { import: 'default' });
+const orbitalModulesGlob = import.meta.glob<OrbitalModule[]>('./data/*/orbitalModules.json', { import: 'default' });
+const transportableModulesGlob = import.meta.glob<TransportableModule[]>('./data/*/transportableModules.json', {
+  import: 'default',
+});
+
+interface AppData {
+  spacecraft: Spacecraft[];
+  launchVehicles: LaunchVehicle[];
+  groundFacilities: GroundFacility[];
+  orbitalModules: OrbitalModule[];
+  transportableModules: TransportableModule[];
+}
 
 const TABS = [
   { id: 'spacecraft', label: 'Spacecraft' },
@@ -32,9 +39,23 @@ export default function App() {
   const [activeTab, setActiveTab] = useLocalStorage<TabId>('active-tab', 'spacecraft');
   const [amounts, setAmounts] = useLocalStorage<Record<string, number>>('amounts', {});
   const [favorites, setFavorites] = useLocalStorage<Record<string, boolean>>('favorites', {});
+  const [data, setData] = useState<AppData | null>(null);
 
   const safeAmounts = amounts ?? {};
   const safeFavorites = favorites ?? {};
+
+  useEffect(() => {
+    const versionDir = versionData.version.replace(/\s+/g, '_');
+    Promise.all([
+      spacecraftGlob[`./data/${versionDir}/spacecraft.json`](),
+      launchVehiclesGlob[`./data/${versionDir}/launchVehicles.json`](),
+      groundFacilitiesGlob[`./data/${versionDir}/groundFacilities.json`](),
+      orbitalModulesGlob[`./data/${versionDir}/orbitalModules.json`](),
+      transportableModulesGlob[`./data/${versionDir}/transportableModules.json`](),
+    ]).then(([spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) => {
+      setData({ spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules });
+    });
+  }, []);
 
   const handleAmountChange = (name: string, value: number) => {
     setAmounts((prev) => {
@@ -65,7 +86,12 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-wide text-amber-400">Solar Expanse Planner</h1>
+        <div className="flex items-baseline gap-4">
+          <h1 className="text-xl font-bold tracking-wide text-amber-400">Solar Expanse Planner</h1>
+          <span className="text-xs text-gray-500">
+            Game data: <span className="text-gray-400">{versionData.version}</span>
+          </span>
+        </div>
         <button
           onClick={handleResetAll}
           className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors"
@@ -92,74 +118,80 @@ export default function App() {
           ))}
         </div>
 
-        {/* Active construction table */}
-        <div className="overflow-x-auto">
-          {activeTab === 'spacecraft' && (
-            <SpacecraftTable
-              data={spacecraft}
-              amounts={safeAmounts}
-              onAmountChange={handleAmountChange}
-              favorites={safeFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-              onResetAmounts={() => resetFor(spacecraft)}
-            />
-          )}
-          {activeTab === 'launch-vehicles' && (
-            <LaunchVehiclesTable
-              data={launchVehicles}
-              amounts={safeAmounts}
-              onAmountChange={handleAmountChange}
-              favorites={safeFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-              onResetAmounts={() => resetFor(launchVehicles)}
-            />
-          )}
-          {activeTab === 'ground-facilities' && (
-            <GroundFacilitiesTable
-              data={groundFacilities}
-              amounts={safeAmounts}
-              onAmountChange={handleAmountChange}
-              favorites={safeFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-              onResetAmounts={() => resetFor(groundFacilities)}
-            />
-          )}
-          {activeTab === 'orbital-modules' && (
-            <OrbitalModulesTable
-              data={orbitalModules}
-              amounts={safeAmounts}
-              onAmountChange={handleAmountChange}
-              favorites={safeFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-              onResetAmounts={() => resetFor(orbitalModules)}
-            />
-          )}
-          {activeTab === 'transportable-modules' && (
-            <TransportableModulesTable
-              data={transportableModules}
-              amounts={safeAmounts}
-              onAmountChange={handleAmountChange}
-              favorites={safeFavorites}
-              onFavoriteToggle={handleFavoriteToggle}
-              onResetAmounts={() => resetFor(transportableModules)}
-            />
-          )}
-        </div>
+        {!data ? (
+          <div className="text-gray-500 text-sm py-8 text-center">Loading game data…</div>
+        ) : (
+          <>
+            {/* Active construction table */}
+            <div className="overflow-x-auto">
+              {activeTab === 'spacecraft' && (
+                <SpacecraftTable
+                  data={data.spacecraft}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAmounts={() => resetFor(data.spacecraft)}
+                />
+              )}
+              {activeTab === 'launch-vehicles' && (
+                <LaunchVehiclesTable
+                  data={data.launchVehicles}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAmounts={() => resetFor(data.launchVehicles)}
+                />
+              )}
+              {activeTab === 'ground-facilities' && (
+                <GroundFacilitiesTable
+                  data={data.groundFacilities}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAmounts={() => resetFor(data.groundFacilities)}
+                />
+              )}
+              {activeTab === 'orbital-modules' && (
+                <OrbitalModulesTable
+                  data={data.orbitalModules}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAmounts={() => resetFor(data.orbitalModules)}
+                />
+              )}
+              {activeTab === 'transportable-modules' && (
+                <TransportableModulesTable
+                  data={data.transportableModules}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAmounts={() => resetFor(data.transportableModules)}
+                />
+              )}
+            </div>
 
-        {/* Always-visible summary */}
-        <section>
-          <h2 className="text-lg font-semibold text-gray-300 mb-3">Summary</h2>
-          <div className="overflow-x-auto">
-            <SummaryTable
-              spacecraft={spacecraft}
-              launchVehicles={launchVehicles}
-              groundFacilities={groundFacilities}
-              orbitalModules={orbitalModules}
-              transportableModules={transportableModules}
-              amounts={safeAmounts}
-            />
-          </div>
-        </section>
+            {/* Always-visible summary */}
+            <section>
+              <h2 className="text-lg font-semibold text-gray-300 mb-3">Summary</h2>
+              <div className="overflow-x-auto">
+                <SummaryTable
+                  spacecraft={data.spacecraft}
+                  launchVehicles={data.launchVehicles}
+                  groundFacilities={data.groundFacilities}
+                  orbitalModules={data.orbitalModules}
+                  transportableModules={data.transportableModules}
+                  amounts={safeAmounts}
+                />
+              </div>
+            </section>
+          </>
+        )}
       </main>
     </div>
   );

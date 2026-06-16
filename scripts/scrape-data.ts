@@ -1,6 +1,6 @@
 import type { HTMLElement as NHTMLElement } from 'node-html-parser';
 import { parse } from 'node-html-parser';
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 type Resources = Record<string, number>;
@@ -49,6 +49,18 @@ async function fetchDoc(url: string) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
   return parse(await res.text());
+}
+
+// ── Version ──────────────────────────────────────────────────────────────────
+
+async function scrapeVersion(): Promise<{ version: string; generatedAt: string }> {
+  const doc = await fetchDoc('https://stockmaj.github.io/solar-expanse-wiki/');
+  // Footer text: "Data from Solar Expanse v0.26.6.3.14 BETA (generated 2026-06-14)."
+  const footerText = doc.querySelector('footer')?.text ?? '';
+  const version =
+    footerText.match(/Solar Expanse (v[\d.]+(?:\s+\S+)?)\s*\(/)?.[1]?.trim() ?? 'unknown';
+  const generatedAt = footerText.match(/generated (\d{4}-\d{2}-\d{2})/)?.[1] ?? '';
+  return { version, generatedAt };
 }
 
 // ── Spacecraft ───────────────────────────────────────────────────────────────
@@ -252,33 +264,48 @@ async function scrapeTransportableModules() {
   return result;
 }
 
+// ── Write helpers ─────────────────────────────────────────────────────────────
+
+function writeJson(paths: string[], data: unknown) {
+  const json = JSON.stringify(data, null, 2);
+  for (const p of paths) writeFileSync(p, json);
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
   const dataDir = resolve(import.meta.dirname, '../src/data');
 
+  console.log('Fetching game version...');
+  const { version, generatedAt } = await scrapeVersion();
+  const sanitizedVersion = version.replace(/\s+/g, '_');
+  const versionedDir = resolve(dataDir, sanitizedVersion);
+  mkdirSync(versionedDir, { recursive: true });
+  console.log(`  → ${version} (generated ${generatedAt})`);
+
   console.log('Scraping spacecraft...');
   const spacecraft = await scrapeSpacecraft();
-  writeFileSync(`${dataDir}/spacecraft.json`, JSON.stringify(spacecraft, null, 2));
+  writeJson([`${versionedDir}/spacecraft.json`], spacecraft);
   console.log(`  → ${spacecraft.length} items`);
 
   console.log('Scraping launch vehicles...');
   const launchVehicles = await scrapeLaunchVehicles();
-  writeFileSync(`${dataDir}/launchVehicles.json`, JSON.stringify(launchVehicles, null, 2));
+  writeJson([`${versionedDir}/launchVehicles.json`], launchVehicles);
   console.log(`  → ${launchVehicles.length} items`);
 
   console.log('Scraping facilities...');
   const { groundFacilities, orbitalModules } = await scrapeFacilities();
-  writeFileSync(`${dataDir}/groundFacilities.json`, JSON.stringify(groundFacilities, null, 2));
-  writeFileSync(`${dataDir}/orbitalModules.json`, JSON.stringify(orbitalModules, null, 2));
+  writeJson([`${versionedDir}/groundFacilities.json`], groundFacilities);
+  writeJson([`${versionedDir}/orbitalModules.json`], orbitalModules);
   console.log(`  → ${groundFacilities.length} ground facilities, ${orbitalModules.length} orbital modules`);
 
   console.log('Scraping transportable modules...');
   const transportableModules = await scrapeTransportableModules();
-  writeFileSync(`${dataDir}/transportableModules.json`, JSON.stringify(transportableModules, null, 2));
+  writeJson([`${versionedDir}/transportableModules.json`], transportableModules);
   console.log(`  → ${transportableModules.length} items`);
 
-  console.log('Done.');
+  writeFileSync(`${dataDir}/version.json`, JSON.stringify({ version, generatedAt }, null, 2));
+  console.log(`Done. Data written to src/data/${sanitizedVersion}/`);
 }
 
 main().catch((err) => {
