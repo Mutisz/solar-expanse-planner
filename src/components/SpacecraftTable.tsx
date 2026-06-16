@@ -1,4 +1,7 @@
+import { useLocalStorage } from 'usehooks-ts';
 import type { Spacecraft } from '../types';
+import { ColumnMenu, defaultVisible } from './ColumnMenu';
+import type { ColumnDef } from './ColumnMenu';
 import {
   AmountInput,
   FavoriteButton,
@@ -10,6 +13,22 @@ import {
   tdClass,
   thClass,
 } from './tableHelpers';
+
+const COLUMN_DEFS: ColumnDef[] = [
+  { key: 'propulsionType',label: 'Propulsion',         defaultOn: false },
+  { key: 'mass',          label: 'Mass (t)',           defaultOn: true  },
+  { key: 'cargo',         label: 'Cargo (t)',          defaultOn: true  },
+  { key: 'fuel',          label: 'Fuel (t)',           defaultOn: false },
+  { key: 'thrust',        label: 'Thrust',             defaultOn: false },
+  { key: 'exhaustV',      label: 'Exhaust V',          defaultOn: false },
+  { key: 'lifeSupport',   label: 'Life Support',       defaultOn: false },
+  { key: 'reusable',      label: 'Reusable',           defaultOn: false },
+  { key: 'builtAt',       label: 'Built At',           defaultOn: false },
+  { key: 'requiresLV',    label: 'Req. LV',            defaultOn: false },
+  { key: 'buildTime',     label: 'Time',               defaultOn: true  },
+  { key: 'buildCost',     label: 'Construction Cost',  defaultOn: true  },
+  { key: 'description',   label: 'Description',        defaultOn: false },
+];
 
 interface Props {
   data: Spacecraft[];
@@ -23,9 +42,14 @@ interface Props {
 export default function SpacecraftTable({ data, amounts, onAmountChange, favorites, onFavoriteToggle, onResetAmounts }: Props) {
   const resources = resourcesForDataset(data);
   const sorted = sortWithFavorites(data, favorites);
+  const [visible, setVisible] = useLocalStorage('spacecraft-cols', defaultVisible(COLUMN_DEFS));
+  const v = visible ?? defaultVisible(COLUMN_DEFS);
+  const toggleCol = (key: string, on: boolean) => setVisible((prev) => ({ ...(prev ?? {}), [key]: on }));
+
   return (
     <div>
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-end gap-2 mb-2">
+        <ColumnMenu defs={COLUMN_DEFS} visible={v} onChange={toggleCol} />
         <button
           onClick={onResetAmounts}
           className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors"
@@ -39,19 +63,19 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
             <th className={thClass}></th>
             <th className={thClass}>Qty</th>
             <th className={thClass}>Name</th>
-            <th className={thClass}>Propulsion</th>
-            <th className={thClass}>Mass (t)</th>
-            <th className={thClass}>Cargo (t)</th>
-            <th className={thClass}>Fuel (t)</th>
-            <th className={thClass}>Thrust</th>
-            <th className={thClass}>Exhaust V</th>
-            <th className={thClass}>Life Support</th>
-            <th className={thClass}>Reusable</th>
-            <th className={thClass}>Built At</th>
-            <th className={thClass}>Req. LV</th>
-            <th className={thClass}>Time (d)</th>
-            <ResourceHeaders resources={resources} />
-            <th className={thClass}>Description</th>
+            {v.propulsionType && <th className={thClass}>Propulsion</th>}
+            {v.mass           && <th className={thClass}>Mass (t)</th>}
+            {v.cargo          && <th className={thClass}>Cargo (t)</th>}
+            {v.fuel           && <th className={thClass}>Fuel (t)</th>}
+            {v.thrust         && <th className={thClass}>Thrust</th>}
+            {v.exhaustV       && <th className={thClass}>Exhaust V</th>}
+            {v.lifeSupport    && <th className={thClass}>Life Support</th>}
+            {v.reusable       && <th className={thClass}>Reusable</th>}
+            {v.builtAt        && <th className={thClass}>Built At</th>}
+            {v.requiresLV     && <th className={thClass}>Req. LV</th>}
+            {v.buildTime      && <th className={thClass}>Time (d)</th>}
+            {v.buildCost      && <ResourceHeaders resources={resources} />}
+            {v.description    && <th className={thClass}>Description</th>}
           </tr>
         </thead>
         <tbody>
@@ -64,19 +88,19 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
                 <AmountInput name={item.name} value={amounts[item.name] ?? 0} onChange={onAmountChange} />
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
-              <td className={tdClass}>{item.propulsionType}</td>
-              <td className={`${tdClass} text-right tabular-nums`}>{item.mass}</td>
-              <td className={`${tdClass} text-right tabular-nums`}>{item.cargo}</td>
-              <td className={`${tdClass} text-right tabular-nums`}>{item.fuel}</td>
-              <td className={tdClass}>{item.thrust}</td>
-              <td className={tdClass}>{item.exhaustV}</td>
-              <td className={tdClass}>{item.lifeSupport}</td>
-              <td className={tdClass}>{item.reusable}</td>
-              <td className={tdClass}>{item.builtAt}</td>
-              <td className={tdClass}>{item.requiresLV}</td>
-              <td className={`${tdClass} text-right tabular-nums`}>{item.buildTime || '—'}</td>
-              <ResourceCells cost={item.buildCost} resources={resources} />
-              <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>
+              {v.propulsionType && <td className={tdClass}>{item.propulsionType}</td>}
+              {v.mass           && <td className={`${tdClass} text-center tabular-nums`}>{item.mass}</td>}
+              {v.cargo          && <td className={`${tdClass} text-center tabular-nums`}>{item.cargo}</td>}
+              {v.fuel           && <td className={`${tdClass} text-center tabular-nums`}>{item.fuel}</td>}
+              {v.thrust         && <td className={tdClass}>{item.thrust}</td>}
+              {v.exhaustV       && <td className={tdClass}>{item.exhaustV}</td>}
+              {v.lifeSupport    && <td className={tdClass}>{item.lifeSupport}</td>}
+              {v.reusable       && <td className={tdClass}>{item.reusable}</td>}
+              {v.builtAt        && <td className={tdClass}>{item.builtAt}</td>}
+              {v.requiresLV     && <td className={tdClass}>{item.requiresLV}</td>}
+              {v.buildTime      && <td className={`${tdClass} text-center tabular-nums`}>{item.buildTime || '—'}</td>}
+              {v.buildCost      && <ResourceCells cost={item.buildCost} resources={resources} />}
+              {v.description    && <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
             </tr>
           ))}
         </tbody>

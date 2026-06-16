@@ -73,13 +73,13 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
         <tr>
           <th className={thClass}>Name</th>
           <th className={thClass}>Category</th>
-          <th className={`${thClass} text-right`}>Qty</th>
+          <th className={`${thClass} text-center`}>Qty</th>
           {usedResources.map((r) => (
-            <th key={r} className={`${thClass} text-right`}>
+            <th key={r} className={`${thClass} text-center`}>
               {r}
             </th>
           ))}
-          <th className={`${thClass} text-right`}>Total</th>
+          <th className={`${thClass} text-center`}>Total</th>
         </tr>
       </thead>
       <tbody>
@@ -87,13 +87,13 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
           <tr key={`${row.category}-${row.name}`} className="hover:bg-gray-900/50">
             <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
             <td className={tdClass}>{CATEGORY_LABEL[row.category]}</td>
-            <td className={`${tdClass} text-right tabular-nums`}>{row.amount}</td>
+            <td className={`${tdClass} text-center tabular-nums`}>{row.amount}</td>
             {usedResources.map((r) => (
-              <td key={r} className={`${tdClass} text-right tabular-nums`}>
+              <td key={r} className={`${tdClass} text-center tabular-nums`}>
                 {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
               </td>
             ))}
-            <td className={`${tdClass} text-right tabular-nums font-medium text-gray-100`}>
+            <td className={`${tdClass} text-center tabular-nums font-medium text-gray-100`}>
               {usedResources.reduce((sum, r) => sum + (row.buildCost[r] ?? 0) * row.amount, 0)}
             </td>
           </tr>
@@ -105,11 +105,11 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
             Total
           </td>
           {usedResources.map((r) => (
-            <td key={r} className={`${tdClass} text-right tabular-nums font-bold text-amber-400`}>
+            <td key={r} className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
               {totals[r] > 0 ? totals[r] : '—'}
             </td>
           ))}
-          <td className={`${tdClass} text-right tabular-nums font-bold text-amber-400`}>
+          <td className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
             {Object.values(totals).reduce((a, b) => a + b, 0)}
           </td>
         </tr>
