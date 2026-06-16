@@ -1,8 +1,16 @@
 {
   "name": "solar-expanse-planner",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Mission planning tool for the Solar Expanse game.",
+  "author": "Mateusz Tokarski <mati.tokarski@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://mutisz.github.io/solar-expanse-planner/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mutisz/solar-expanse-planner.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
