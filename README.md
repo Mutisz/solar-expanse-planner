@@ -2,7 +2,7 @@
 
 A mission-planning tool for the [Solar Expanse](https://store.steampowered.com/app/1811150/Solar_Expanse/) game. Plan construction projects by browsing all buildable items, selecting quantities, and seeing aggregated resource costs in a summary table.
 
-**Live app:** https://mutisz.github.io/solar-espanse-planner/
+**Live app:** https://mutisz.github.io/solar-expanse-planner/
 
 ---
 
@@ -50,7 +50,7 @@ npm run scrape
 npm run dev
 ```
 
-Opens at `http://localhost:5173/solar-espanse-planner/`.
+Opens at `http://localhost:5173/solar-expanse-planner/`.
 
 ### Build
 
