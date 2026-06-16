@@ -2,7 +2,7 @@ import { ALL_RESOURCES } from '../types';
 import type { GroundFacility, LaunchVehicle, OrbitalModule, Resources, Spacecraft, TransportableModule } from '../types';
 import { tableClass, tdClass, thClass } from './tableHelpers';
 
-type AnyItem = { name: string; buildCost: Resources };
+type AnyItem = { name: string; buildCost: Resources; workers?: string; energy?: string };
 
 const CATEGORY_LABEL: Record<string, string> = {
   spacecraft: 'Spacecraft',
@@ -17,6 +17,8 @@ interface SummaryRow {
   category: string;
   amount: number;
   buildCost: Resources;
+  workers: number;
+  energy: number;
 }
 
 interface Props {
@@ -28,6 +30,11 @@ interface Props {
   amounts: Record<string, number>;
 }
 
+function parseNum(s: string | undefined): number {
+  const n = parseInt(s ?? '', 10);
+  return isNaN(n) ? 0 : n;
+}
+
 function buildRows(items: AnyItem[], category: string, amounts: Record<string, number>): SummaryRow[] {
   return items
     .filter((item) => (amounts[item.name] ?? 0) > 0)
@@ -36,6 +43,8 @@ function buildRows(items: AnyItem[], category: string, amounts: Record<string, n
       category,
       amount: amounts[item.name],
       buildCost: item.buildCost,
+      workers: parseNum(item.workers),
+      energy: parseNum(item.energy),
     }));
 }
 
@@ -48,16 +57,20 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
     ...buildRows(transportableModules, 'transportableModule', amounts),
   ];
 
-  // Determine which resources are relevant (appear in any selected row)
+  const hasWorkers = rows.some((r) => r.workers > 0);
+  const hasEnergy = rows.some((r) => r.energy > 0);
+
   const usedResources = ALL_RESOURCES.filter((r) =>
     rows.some((row) => (row.buildCost[r] ?? 0) > 0),
   );
 
-  // Compute totals
   const totals: Resources = {};
   for (const r of usedResources) {
     totals[r] = rows.reduce((sum, row) => sum + (row.buildCost[r] ?? 0) * row.amount, 0);
   }
+
+  const totalWorkers = rows.reduce((s, r) => s + r.workers * r.amount, 0);
+  const totalEnergy = rows.reduce((s, r) => s + r.energy * r.amount, 0);
 
   if (rows.length === 0) {
     return (
@@ -74,6 +87,8 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
           <th className={thClass}>Name</th>
           <th className={thClass}>Category</th>
           <th className={`${thClass} text-center`}>Qty</th>
+          {hasWorkers && <th className={`${thClass} text-center`}>Workers</th>}
+          {hasEnergy && <th className={`${thClass} text-center`}>Energy</th>}
           {usedResources.map((r) => (
             <th key={r} className={`${thClass} text-center`}>
               {r}
@@ -88,6 +103,16 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
             <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
             <td className={tdClass}>{CATEGORY_LABEL[row.category]}</td>
             <td className={`${tdClass} text-center tabular-nums`}>{row.amount}</td>
+            {hasWorkers && (
+              <td className={`${tdClass} text-center tabular-nums`}>
+                {row.workers > 0 ? row.workers * row.amount : '—'}
+              </td>
+            )}
+            {hasEnergy && (
+              <td className={`${tdClass} text-center tabular-nums`}>
+                {row.energy > 0 ? row.energy * row.amount : '—'}
+              </td>
+            )}
             {usedResources.map((r) => (
               <td key={r} className={`${tdClass} text-center tabular-nums`}>
                 {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
@@ -104,6 +129,16 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
           <td className={`${tdClass} font-bold text-gray-100`} colSpan={3}>
             Total
           </td>
+          {hasWorkers && (
+            <td className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
+              {totalWorkers > 0 ? totalWorkers : '—'}
+            </td>
+          )}
+          {hasEnergy && (
+            <td className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
+              {totalEnergy > 0 ? totalEnergy : '—'}
+            </td>
+          )}
           {usedResources.map((r) => (
             <td key={r} className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
               {totals[r] > 0 ? totals[r] : '—'}
