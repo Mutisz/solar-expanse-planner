@@ -26,11 +26,12 @@ interface AppData {
 }
 
 const TABS = [
-  { id: 'spacecraft', label: 'Spacecraft' },
-  { id: 'launch-vehicles', label: 'Launch Vehicles' },
-  { id: 'ground-facilities', label: 'Ground Facilities' },
-  { id: 'orbital-modules', label: 'Orbital Modules' },
-  { id: 'transportable-modules', label: 'Transportable Modules' },
+  { id: 'spacecraft', label: 'Spacecraft', highlight: false },
+  { id: 'launch-vehicles', label: 'Launch Vehicles', highlight: false },
+  { id: 'ground-facilities', label: 'Ground Facilities', highlight: false },
+  { id: 'orbital-modules', label: 'Orbital Modules', highlight: false },
+  { id: 'transportable-modules', label: 'Transportable Modules', highlight: false },
+  { id: 'summary', label: 'Summary', highlight: true },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
@@ -103,94 +104,92 @@ export default function App() {
       <main className="px-6 py-4 space-y-6">
         {/* Tab bar */}
         <div className="flex flex-wrap gap-1 border-b border-gray-800">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium rounded-t transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-gray-800 text-amber-400 border border-b-0 border-gray-700'
-                  : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const tabClass = isActive
+              ? tab.highlight
+                ? 'bg-gray-800 text-amber-300 border border-b-0 border-amber-600'
+                : 'bg-gray-800 text-amber-400 border border-b-0 border-gray-700'
+              : tab.highlight
+                ? 'text-amber-400 hover:text-amber-300 hover:bg-gray-900 border border-transparent'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900';
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 text-sm font-medium rounded-t transition-colors ${tabClass}`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {!data ? (
           <div className="text-gray-500 text-sm py-8 text-center">Loading game data…</div>
         ) : (
-          <>
-            {/* Active construction table */}
-            <div className="overflow-x-auto">
-              {activeTab === 'spacecraft' && (
-                <SpacecraftTable
-                  data={data.spacecraft}
-                  amounts={safeAmounts}
-                  onAmountChange={handleAmountChange}
-                  favorites={safeFavorites}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onResetAmounts={() => resetFor(data.spacecraft)}
-                />
-              )}
-              {activeTab === 'launch-vehicles' && (
-                <LaunchVehiclesTable
-                  data={data.launchVehicles}
-                  amounts={safeAmounts}
-                  onAmountChange={handleAmountChange}
-                  favorites={safeFavorites}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onResetAmounts={() => resetFor(data.launchVehicles)}
-                />
-              )}
-              {activeTab === 'ground-facilities' && (
-                <GroundFacilitiesTable
-                  data={data.groundFacilities}
-                  amounts={safeAmounts}
-                  onAmountChange={handleAmountChange}
-                  favorites={safeFavorites}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onResetAmounts={() => resetFor(data.groundFacilities)}
-                />
-              )}
-              {activeTab === 'orbital-modules' && (
-                <OrbitalModulesTable
-                  data={data.orbitalModules}
-                  amounts={safeAmounts}
-                  onAmountChange={handleAmountChange}
-                  favorites={safeFavorites}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onResetAmounts={() => resetFor(data.orbitalModules)}
-                />
-              )}
-              {activeTab === 'transportable-modules' && (
-                <TransportableModulesTable
-                  data={data.transportableModules}
-                  amounts={safeAmounts}
-                  onAmountChange={handleAmountChange}
-                  favorites={safeFavorites}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onResetAmounts={() => resetFor(data.transportableModules)}
-                />
-              )}
-            </div>
-
-            {/* Always-visible summary */}
-            <section>
-              <h2 className="text-lg font-semibold text-gray-300 mb-3">Summary</h2>
-              <div className="overflow-x-auto">
-                <SummaryTable
-                  spacecraft={data.spacecraft}
-                  launchVehicles={data.launchVehicles}
-                  groundFacilities={data.groundFacilities}
-                  orbitalModules={data.orbitalModules}
-                  transportableModules={data.transportableModules}
-                  amounts={safeAmounts}
-                />
-              </div>
-            </section>
-          </>
+          <div className="overflow-x-auto">
+            {activeTab === 'spacecraft' && (
+              <SpacecraftTable
+                data={data.spacecraft}
+                amounts={safeAmounts}
+                onAmountChange={handleAmountChange}
+                favorites={safeFavorites}
+                onFavoriteToggle={handleFavoriteToggle}
+                onResetAmounts={() => resetFor(data.spacecraft)}
+              />
+            )}
+            {activeTab === 'launch-vehicles' && (
+              <LaunchVehiclesTable
+                data={data.launchVehicles}
+                amounts={safeAmounts}
+                onAmountChange={handleAmountChange}
+                favorites={safeFavorites}
+                onFavoriteToggle={handleFavoriteToggle}
+                onResetAmounts={() => resetFor(data.launchVehicles)}
+              />
+            )}
+            {activeTab === 'ground-facilities' && (
+              <GroundFacilitiesTable
+                data={data.groundFacilities}
+                amounts={safeAmounts}
+                onAmountChange={handleAmountChange}
+                favorites={safeFavorites}
+                onFavoriteToggle={handleFavoriteToggle}
+                onResetAmounts={() => resetFor(data.groundFacilities)}
+              />
+            )}
+            {activeTab === 'orbital-modules' && (
+              <OrbitalModulesTable
+                data={data.orbitalModules}
+                amounts={safeAmounts}
+                onAmountChange={handleAmountChange}
+                favorites={safeFavorites}
+                onFavoriteToggle={handleFavoriteToggle}
+                onResetAmounts={() => resetFor(data.orbitalModules)}
+              />
+            )}
+            {activeTab === 'transportable-modules' && (
+              <TransportableModulesTable
+                data={data.transportableModules}
+                amounts={safeAmounts}
+                onAmountChange={handleAmountChange}
+                favorites={safeFavorites}
+                onFavoriteToggle={handleFavoriteToggle}
+                onResetAmounts={() => resetFor(data.transportableModules)}
+              />
+            )}
+            {activeTab === 'summary' && (
+              <SummaryTable
+                spacecraft={data.spacecraft}
+                launchVehicles={data.launchVehicles}
+                groundFacilities={data.groundFacilities}
+                orbitalModules={data.orbitalModules}
+                transportableModules={data.transportableModules}
+                amounts={safeAmounts}
+              />
+            )}
+          </div>
         )}
       </main>
     </div>

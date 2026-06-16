@@ -62,7 +62,7 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
   if (rows.length === 0) {
     return (
       <p className="text-sm text-gray-500 italic">
-        Set a quantity on any construction above to see it here.
+        Set a quantity on any construction tab to see it here.
       </p>
     );
   }
@@ -79,6 +79,7 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
               {r}
             </th>
           ))}
+          <th className={`${thClass} text-right`}>Total</th>
         </tr>
       </thead>
       <tbody>
@@ -92,6 +93,9 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
                 {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
               </td>
             ))}
+            <td className={`${tdClass} text-right tabular-nums font-medium text-gray-100`}>
+              {usedResources.reduce((sum, r) => sum + (row.buildCost[r] ?? 0) * row.amount, 0)}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -105,6 +109,9 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
               {totals[r] > 0 ? totals[r] : '—'}
             </td>
           ))}
+          <td className={`${tdClass} text-right tabular-nums font-bold text-amber-400`}>
+            {Object.values(totals).reduce((a, b) => a + b, 0)}
+          </td>
         </tr>
       </tfoot>
     </table>
