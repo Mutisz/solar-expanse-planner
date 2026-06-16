@@ -1,0 +1,25 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+  "name": "solar-expanse-planner-dev",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+  "mounts": ["source=solar-expanse-planner-claude,target=/home/node/.claude,type=volume"],
+  "forwardPorts": [5173],
+  "postCreateCommand": "sudo chown -R node:node /home/node/.claude",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "extensions": [
+        // Base
+        "ms-azuretools.vscode-containers",
+        "anthropic.claude-code",
+
+        // JS
+        "esbenp.prettier-vscode",
+        "howardzuo.vscode-npm-dependency"
+      ]
+    }
+  }
+}
