@@ -21,7 +21,9 @@ import { createMission } from './types';
 
 const spacecraftGlob = import.meta.glob<Spacecraft[]>('./data/*/spacecraft.json', { import: 'default' });
 const launchVehiclesGlob = import.meta.glob<LaunchVehicle[]>('./data/*/launchVehicles.json', { import: 'default' });
-const groundFacilitiesGlob = import.meta.glob<GroundFacility[]>('./data/*/groundFacilities.json', { import: 'default' });
+const groundFacilitiesGlob = import.meta.glob<GroundFacility[]>('./data/*/groundFacilities.json', {
+  import: 'default',
+});
 const orbitalModulesGlob = import.meta.glob<OrbitalModule[]>('./data/*/orbitalModules.json', { import: 'default' });
 const transportableModulesGlob = import.meta.glob<TransportableModule[]>('./data/*/transportableModules.json', {
   import: 'default',
@@ -145,6 +147,15 @@ export default function App() {
             <h1 className="text-xl font-bold tracking-wide text-amber-400">Solar Expanse Planner</h1>
             <span className="text-xs text-gray-500">
               Game data: <span className="text-gray-400">{versionData.version}</span>
+              {' · Based on data from '}
+              <a
+                href="https://stockmaj.github.io/solar-expanse-wiki/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-amber-400 underline"
+              >
+                unofficial fan wiki
+              </a>
             </span>
           </div>
         </div>
