@@ -91,17 +91,17 @@ export default function LaunchVehiclesTable({ data, amounts, onAmountChange, fav
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
               {v.propulsionType && <td className={tdClass}>{item.propulsionType}</td>}
-              {v.payload        && <td className={`${tdClass} text-center tabular-nums`}>{item.payload || '—'}</td>}
+              {v.payload        && <td className={`${tdClass} tabular-nums`}>{item.payload || '—'}</td>}
               {v.reusable       && <td className={tdClass}>{item.reusable || '—'}</td>}
               {v.crew           && <td className={tdClass}>{item.crew || '—'}</td>}
               {v.maxG           && <td className={tdClass}>{item.maxG || '—'}</td>}
               {v.launchCost     && <td className={tdClass}>{item.launchCost || '—'}</td>}
-              {v.maintenance    && <td className={`${tdClass} text-center tabular-nums`}>{item.maintenance || '—'}</td>}
-              {v.workers        && <td className={`${tdClass} text-center tabular-nums`}>{item.workers || '—'}</td>}
-              {v.energy         && <td className={`${tdClass} text-center tabular-nums`}>{item.energy || '—'}</td>}
+              {v.maintenance    && <td className={`${tdClass} tabular-nums`}>{item.maintenance || '—'}</td>}
+              {v.workers        && <td className={`${tdClass} tabular-nums`}>{item.workers || '—'}</td>}
+              {v.energy         && <td className={`${tdClass} tabular-nums`}>{item.energy || '—'}</td>}
               {v.launchBonus    && <td className={tdClass}>{item.launchBonus || '—'}</td>}
               {v.prereq         && <td className={tdClass}>{item.prereq || '—'}</td>}
-              {v.buildTime      && <td className={`${tdClass} text-center tabular-nums`}>{item.buildTime || '—'}</td>}
+              {v.buildTime      && <td className={`${tdClass} tabular-nums`}>{item.buildTime || '—'}</td>}
               {v.buildCost      && <ResourceCells cost={item.buildCost} resources={resources} />}
               {v.description    && <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
             </tr>

@@ -2,7 +2,7 @@ import type { Resources } from '../types';
 
 export const thClass = 'px-3 py-2 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide whitespace-nowrap border-b border-gray-700';
 export const tdClass = 'px-3 py-2 text-sm text-gray-300 border-b border-gray-800';
-export const tdNumClass = 'px-3 py-2 text-sm text-gray-300 border-b border-gray-800 text-center tabular-nums';
+export const tdNumClass = 'px-3 py-2 text-sm text-gray-300 border-b border-gray-800 tabular-nums';
 export const tableClass = 'w-full border-collapse text-left';
 
 export function ResourceCells({ cost, resources }: { cost: Resources; resources: readonly string[] }) {
@@ -75,7 +75,7 @@ export function FavoriteButton({
     <button
       onClick={() => onToggle(name)}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-      className={`text-base leading-none transition-colors ${isFavorited ? 'text-amber-400' : 'text-gray-600 hover:text-gray-400'}`}
+      className={`text-xl leading-none transition-all cursor-pointer hover:scale-125 ${isFavorited ? 'text-amber-400 hover:text-amber-300' : 'text-gray-600 hover:text-amber-400'}`}
     >
       {isFavorited ? '★' : '☆'}
     </button>

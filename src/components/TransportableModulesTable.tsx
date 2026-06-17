@@ -77,10 +77,10 @@ export default function TransportableModulesTable({ data, amounts, onAmountChang
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
               {v.type        && <td className={tdClass}>{item.type || '—'}</td>}
-              {v.mass        && <td className={`${tdClass} text-center tabular-nums`}>{item.mass || '—'}</td>}
+              {v.mass        && <td className={`${tdClass} tabular-nums`}>{item.mass || '—'}</td>}
               {v.role        && <td className={tdClass}>{item.role || '—'}</td>}
-              {v.maintenance && <td className={`${tdClass} text-center tabular-nums`}>{item.maintenance || '—'}</td>}
-              {v.buildTime   && <td className={`${tdClass} text-center tabular-nums`}>{item.buildTime || '—'}</td>}
+              {v.maintenance && <td className={`${tdClass} tabular-nums`}>{item.maintenance || '—'}</td>}
+              {v.buildTime   && <td className={`${tdClass} tabular-nums`}>{item.buildTime || '—'}</td>}
               {v.buildCost   && <ResourceCells cost={item.buildCost} resources={resources} />}
               {v.description && <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
             </tr>

@@ -89,16 +89,16 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
               {v.propulsionType && <td className={tdClass}>{item.propulsionType}</td>}
-              {v.mass           && <td className={`${tdClass} text-center tabular-nums`}>{item.mass}</td>}
-              {v.cargo          && <td className={`${tdClass} text-center tabular-nums`}>{item.cargo}</td>}
-              {v.fuel           && <td className={`${tdClass} text-center tabular-nums`}>{item.fuel}</td>}
+              {v.mass           && <td className={`${tdClass} tabular-nums`}>{item.mass}</td>}
+              {v.cargo          && <td className={`${tdClass} tabular-nums`}>{item.cargo}</td>}
+              {v.fuel           && <td className={`${tdClass} tabular-nums`}>{item.fuel}</td>}
               {v.thrust         && <td className={tdClass}>{item.thrust}</td>}
               {v.exhaustV       && <td className={tdClass}>{item.exhaustV}</td>}
               {v.lifeSupport    && <td className={tdClass}>{item.lifeSupport}</td>}
               {v.reusable       && <td className={tdClass}>{item.reusable}</td>}
               {v.builtAt        && <td className={tdClass}>{item.builtAt}</td>}
               {v.requiresLV     && <td className={tdClass}>{item.requiresLV}</td>}
-              {v.buildTime      && <td className={`${tdClass} text-center tabular-nums`}>{item.buildTime || '—'}</td>}
+              {v.buildTime      && <td className={`${tdClass} tabular-nums`}>{item.buildTime || '—'}</td>}
               {v.buildCost      && <ResourceCells cost={item.buildCost} resources={resources} />}
               {v.description    && <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
             </tr>

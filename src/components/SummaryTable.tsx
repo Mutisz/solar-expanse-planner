@@ -86,15 +86,15 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
         <tr>
           <th className={thClass}>Name</th>
           <th className={thClass}>Category</th>
-          <th className={`${thClass} text-center`}>Qty</th>
-          {hasWorkers && <th className={`${thClass} text-center`}>Workers</th>}
-          {hasEnergy && <th className={`${thClass} text-center`}>Energy</th>}
+          <th className={`${thClass}`}>Qty</th>
+          {hasWorkers && <th className={`${thClass}`}>Workers</th>}
+          {hasEnergy && <th className={`${thClass}`}>Energy</th>}
           {usedResources.map((r) => (
-            <th key={r} className={`${thClass} text-center`}>
+            <th key={r} className={`${thClass}`}>
               {r}
             </th>
           ))}
-          <th className={`${thClass} text-center`}>Total</th>
+          <th className={`${thClass}`}>Total</th>
         </tr>
       </thead>
       <tbody>
@@ -102,23 +102,23 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
           <tr key={`${row.category}-${row.name}`} className="hover:bg-gray-900/50">
             <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
             <td className={tdClass}>{CATEGORY_LABEL[row.category]}</td>
-            <td className={`${tdClass} text-center tabular-nums`}>{row.amount}</td>
+            <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
             {hasWorkers && (
-              <td className={`${tdClass} text-center tabular-nums`}>
+              <td className={`${tdClass} tabular-nums`}>
                 {row.workers > 0 ? row.workers * row.amount : '—'}
               </td>
             )}
             {hasEnergy && (
-              <td className={`${tdClass} text-center tabular-nums`}>
+              <td className={`${tdClass} tabular-nums`}>
                 {row.energy > 0 ? row.energy * row.amount : '—'}
               </td>
             )}
             {usedResources.map((r) => (
-              <td key={r} className={`${tdClass} text-center tabular-nums`}>
+              <td key={r} className={`${tdClass} tabular-nums`}>
                 {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
               </td>
             ))}
-            <td className={`${tdClass} text-center tabular-nums font-medium text-gray-100`}>
+            <td className={`${tdClass} tabular-nums font-medium text-gray-100`}>
               {usedResources.reduce((sum, r) => sum + (row.buildCost[r] ?? 0) * row.amount, 0)}
             </td>
           </tr>
@@ -130,21 +130,21 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
             Total
           </td>
           {hasWorkers && (
-            <td className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
+            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
               {totalWorkers > 0 ? totalWorkers : '—'}
             </td>
           )}
           {hasEnergy && (
-            <td className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
+            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
               {totalEnergy > 0 ? totalEnergy : '—'}
             </td>
           )}
           {usedResources.map((r) => (
-            <td key={r} className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
+            <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
               {totals[r] > 0 ? totals[r] : '—'}
             </td>
           ))}
-          <td className={`${tdClass} text-center tabular-nums font-bold text-amber-400`}>
+          <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
             {Object.values(totals).reduce((a, b) => a + b, 0)}
           </td>
         </tr>
