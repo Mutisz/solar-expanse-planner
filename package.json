@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Mission planning tool for the Solar Expanse game.",
   "author": "Mateusz Tokarski <mati.tokarski@gmail.com>",
-  "license": "GPL-3.0-or-later",
+  "license": "CC-BY-SA-4.0",
   "homepage": "https://mutisz.github.io/solar-expanse-planner/",
   "repository": {
     "type": "git",
