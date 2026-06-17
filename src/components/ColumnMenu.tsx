@@ -35,7 +35,7 @@ export function ColumnMenu({ defs, visible, onChange }: Props) {
     <div ref={wrapperRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="text-xs text-gray-400 hover:text-gray-200 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer"
+        className="text-sm text-gray-400 hover:text-gray-200 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer"
       >
         Columns ▾
       </button>
