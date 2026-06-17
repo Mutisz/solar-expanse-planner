@@ -17,6 +17,7 @@ import type {
   Spacecraft,
   TransportableModule,
 } from './types';
+import { createMission } from './types';
 
 const spacecraftGlob = import.meta.glob<Spacecraft[]>('./data/*/spacecraft.json', { import: 'default' });
 const launchVehiclesGlob = import.meta.glob<LaunchVehicle[]>('./data/*/launchVehicles.json', { import: 'default' });
@@ -106,6 +107,29 @@ export default function App() {
 
   const updateMission = (updated: Mission) => {
     setMissions((prev) => (prev ?? []).map((m) => (m.id === updated.id ? updated : m)));
+  };
+
+  const handleCopyToMission = (missionId: string, constructions: Record<string, number>) => {
+    setMissions((prev) =>
+      (prev ?? []).map((m) => {
+        if (m.id !== missionId) return m;
+        const merged = { ...m.constructions };
+        for (const [name, qty] of Object.entries(constructions)) {
+          merged[name] = (merged[name] ?? 0) + qty;
+        }
+        return { ...m, constructions: merged };
+      }),
+    );
+    setActiveMissionId(missionId);
+    setActiveView('mission-planner');
+  };
+
+  const handleCopyToNewMission = (constructions: Record<string, number>) => {
+    const id = crypto.randomUUID();
+    const mission = { ...createMission(id), constructions };
+    setMissions((prev) => [...(prev ?? []), mission]);
+    setActiveMissionId(id);
+    setActiveView('mission-planner');
   };
 
   const viewBtnClass = (id: ViewId) =>
@@ -234,6 +258,9 @@ export default function App() {
                   orbitalModules={data.orbitalModules}
                   transportableModules={data.transportableModules}
                   amounts={safeAmounts}
+                  missions={safeMissions}
+                  onCopyToMission={handleCopyToMission}
+                  onCopyToNewMission={handleCopyToNewMission}
                 />
               )}
             </div>

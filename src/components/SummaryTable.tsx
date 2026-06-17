@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { ALL_RESOURCES } from '../types';
-import type { GroundFacility, LaunchVehicle, OrbitalModule, Resources, Spacecraft, TransportableModule } from '../types';
+import type { GroundFacility, LaunchVehicle, Mission, OrbitalModule, Resources, Spacecraft, TransportableModule } from '../types';
 import { tableClass, tdClass, thClass } from './tableHelpers';
 
 type AnyItem = { name: string; buildCost: Resources; workers?: string; energy?: string };
@@ -28,6 +29,9 @@ interface Props {
   orbitalModules: OrbitalModule[];
   transportableModules: TransportableModule[];
   amounts: Record<string, number>;
+  missions: Mission[];
+  onCopyToMission: (missionId: string, constructions: Record<string, number>) => void;
+  onCopyToNewMission: (constructions: Record<string, number>) => void;
 }
 
 function parseNum(s: string | undefined): number {
@@ -48,7 +52,9 @@ function buildRows(items: AnyItem[], category: string, amounts: Record<string, n
     }));
 }
 
-export default function SummaryTable({ spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules, amounts }: Props) {
+export default function SummaryTable({ spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules, amounts, missions, onCopyToMission, onCopyToNewMission }: Props) {
+  const [selectedMissionId, setSelectedMissionId] = useState('');
+
   const rows: SummaryRow[] = [
     ...buildRows(spacecraft, 'spacecraft', amounts),
     ...buildRows(launchVehicles, 'launchVehicle', amounts),
@@ -72,6 +78,12 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
   const totalWorkers = rows.reduce((s, r) => s + r.workers * r.amount, 0);
   const totalEnergy = rows.reduce((s, r) => s + r.energy * r.amount, 0);
 
+  const activeAmounts: Record<string, number> = {};
+  for (const [name, qty] of Object.entries(amounts)) {
+    if (qty > 0) activeAmounts[name] = qty;
+  }
+  const hasItems = Object.keys(activeAmounts).length > 0;
+
   if (rows.length === 0) {
     return (
       <p className="text-sm text-gray-500 italic">
@@ -80,75 +92,116 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
     );
   }
 
+  const btnClass = 'text-sm text-gray-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer';
+
   return (
-    <table className={tableClass}>
-      <thead className="bg-gray-900">
-        <tr>
-          <th className={thClass}>Name</th>
-          <th className={thClass}>Category</th>
-          <th className={`${thClass}`}>Qty</th>
-          {hasWorkers && <th className={`${thClass}`}>Workers</th>}
-          {hasEnergy && <th className={`${thClass}`}>Energy</th>}
-          {usedResources.map((r) => (
-            <th key={r} className={`${thClass}`}>
-              {r}
-            </th>
+    <div className="space-y-4">
+      <table className={tableClass}>
+        <thead className="bg-gray-900">
+          <tr>
+            <th className={thClass}>Name</th>
+            <th className={thClass}>Category</th>
+            <th className={`${thClass}`}>Qty</th>
+            {hasWorkers && <th className={`${thClass}`}>Workers</th>}
+            {hasEnergy && <th className={`${thClass}`}>Energy</th>}
+            {usedResources.map((r) => (
+              <th key={r} className={`${thClass}`}>
+                {r}
+              </th>
+            ))}
+            <th className={`${thClass}`}>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={`${row.category}-${row.name}`} className="hover:bg-gray-900/50">
+              <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
+              <td className={tdClass}>{CATEGORY_LABEL[row.category]}</td>
+              <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
+              {hasWorkers && (
+                <td className={`${tdClass} tabular-nums`}>
+                  {row.workers > 0 ? row.workers * row.amount : '—'}
+                </td>
+              )}
+              {hasEnergy && (
+                <td className={`${tdClass} tabular-nums`}>
+                  {row.energy > 0 ? row.energy * row.amount : '—'}
+                </td>
+              )}
+              {usedResources.map((r) => (
+                <td key={r} className={`${tdClass} tabular-nums`}>
+                  {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
+                </td>
+              ))}
+              <td className={`${tdClass} tabular-nums font-medium text-gray-100`}>
+                {usedResources.reduce((sum, r) => sum + (row.buildCost[r] ?? 0) * row.amount, 0)}
+              </td>
+            </tr>
           ))}
-          <th className={`${thClass}`}>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr key={`${row.category}-${row.name}`} className="hover:bg-gray-900/50">
-            <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
-            <td className={tdClass}>{CATEGORY_LABEL[row.category]}</td>
-            <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
+        </tbody>
+        <tfoot>
+          <tr className="bg-gray-900 border-t-2 border-gray-600">
+            <td className={`${tdClass} font-bold text-gray-100`} colSpan={3}>
+              Total
+            </td>
             {hasWorkers && (
-              <td className={`${tdClass} tabular-nums`}>
-                {row.workers > 0 ? row.workers * row.amount : '—'}
+              <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                {totalWorkers > 0 ? totalWorkers : '—'}
               </td>
             )}
             {hasEnergy && (
-              <td className={`${tdClass} tabular-nums`}>
-                {row.energy > 0 ? row.energy * row.amount : '—'}
+              <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                {totalEnergy > 0 ? totalEnergy : '—'}
               </td>
             )}
             {usedResources.map((r) => (
-              <td key={r} className={`${tdClass} tabular-nums`}>
-                {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
+              <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                {totals[r] > 0 ? totals[r] : '—'}
               </td>
             ))}
-            <td className={`${tdClass} tabular-nums font-medium text-gray-100`}>
-              {usedResources.reduce((sum, r) => sum + (row.buildCost[r] ?? 0) * row.amount, 0)}
+            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+              {Object.values(totals).reduce((a, b) => a + b, 0)}
             </td>
           </tr>
-        ))}
-      </tbody>
-      <tfoot>
-        <tr className="bg-gray-900 border-t-2 border-gray-600">
-          <td className={`${tdClass} font-bold text-gray-100`} colSpan={3}>
-            Total
-          </td>
-          {hasWorkers && (
-            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-              {totalWorkers > 0 ? totalWorkers : '—'}
-            </td>
+        </tfoot>
+      </table>
+
+      {hasItems && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm text-gray-500">Copy to mission:</span>
+          {missions.length > 0 && (
+            <>
+              <select
+                value={selectedMissionId}
+                onChange={(e) => setSelectedMissionId(e.target.value)}
+                className="rounded bg-gray-800 border border-gray-700 px-3 py-1 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
+              >
+                <option value="">Select mission...</option>
+                {missions.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name || 'Unnamed Mission'}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => {
+                  if (selectedMissionId) onCopyToMission(selectedMissionId, activeAmounts);
+                }}
+                disabled={!selectedMissionId}
+                className={`${btnClass} ${selectedMissionId ? 'hover:text-amber-400' : 'opacity-50'}`}
+              >
+                Add to Mission
+              </button>
+            </>
           )}
-          {hasEnergy && (
-            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-              {totalEnergy > 0 ? totalEnergy : '—'}
-            </td>
-          )}
-          {usedResources.map((r) => (
-            <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-              {totals[r] > 0 ? totals[r] : '—'}
-            </td>
-          ))}
-          <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-            {Object.values(totals).reduce((a, b) => a + b, 0)}
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+          <button
+            onClick={() => onCopyToNewMission(activeAmounts)}
+            className={`${btnClass} hover:text-green-400`}
+          >
+            Create New Mission
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
