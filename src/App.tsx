@@ -2,12 +2,21 @@ import { useEffect, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import GroundFacilitiesTable from './components/GroundFacilitiesTable';
 import LaunchVehiclesTable from './components/LaunchVehiclesTable';
+import MissionsView from './components/missions/MissionsView';
 import OrbitalModulesTable from './components/OrbitalModulesTable';
 import SpacecraftTable from './components/SpacecraftTable';
 import SummaryTable from './components/SummaryTable';
 import TransportableModulesTable from './components/TransportableModulesTable';
 import versionData from './data/version.json';
-import type { GroundFacility, LaunchVehicle, OrbitalModule, Spacecraft, TransportableModule } from './types';
+import type {
+  CelestialBody,
+  GroundFacility,
+  LaunchVehicle,
+  Mission,
+  OrbitalModule,
+  Spacecraft,
+  TransportableModule,
+} from './types';
 
 const spacecraftGlob = import.meta.glob<Spacecraft[]>('./data/*/spacecraft.json', { import: 'default' });
 const launchVehiclesGlob = import.meta.glob<LaunchVehicle[]>('./data/*/launchVehicles.json', { import: 'default' });
@@ -16,6 +25,7 @@ const orbitalModulesGlob = import.meta.glob<OrbitalModule[]>('./data/*/orbitalMo
 const transportableModulesGlob = import.meta.glob<TransportableModule[]>('./data/*/transportableModules.json', {
   import: 'default',
 });
+const celestialBodiesGlob = import.meta.glob<CelestialBody[]>('./data/*/celestialBodies.json', { import: 'default' });
 
 interface AppData {
   spacecraft: Spacecraft[];
@@ -23,6 +33,7 @@ interface AppData {
   groundFacilities: GroundFacility[];
   orbitalModules: OrbitalModule[];
   transportableModules: TransportableModule[];
+  celestialBodies: CelestialBody[];
 }
 
 const TABS = [
@@ -31,6 +42,7 @@ const TABS = [
   { id: 'ground-facilities', label: 'Ground Facilities', highlight: false },
   { id: 'orbital-modules', label: 'Orbital Modules', highlight: false },
   { id: 'transportable-modules', label: 'Transportable Modules', highlight: false },
+  { id: 'missions', label: 'Missions', highlight: true },
   { id: 'summary', label: 'Summary', highlight: true },
 ] as const;
 
@@ -40,10 +52,13 @@ export default function App() {
   const [activeTab, setActiveTab] = useLocalStorage<TabId>('active-tab', 'spacecraft');
   const [amounts, setAmounts] = useLocalStorage<Record<string, number>>('amounts', {});
   const [favorites, setFavorites] = useLocalStorage<Record<string, boolean>>('favorites', {});
+  const [missions, setMissions] = useLocalStorage<Mission[]>('missions', []);
+  const [activeMissionId, setActiveMissionId] = useLocalStorage<string | null>('active-mission', null);
   const [data, setData] = useState<AppData | null>(null);
 
   const safeAmounts = amounts ?? {};
   const safeFavorites = favorites ?? {};
+  const safeMissions = missions ?? [];
 
   useEffect(() => {
     const versionDir = versionData.version.replace(/\s+/g, '_');
@@ -53,8 +68,9 @@ export default function App() {
       groundFacilitiesGlob[`./data/${versionDir}/groundFacilities.json`](),
       orbitalModulesGlob[`./data/${versionDir}/orbitalModules.json`](),
       transportableModulesGlob[`./data/${versionDir}/transportableModules.json`](),
-    ]).then(([spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) => {
-      setData({ spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules });
+      celestialBodiesGlob[`./data/${versionDir}/celestialBodies.json`](),
+    ]).then(([spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules, celestialBodies]) => {
+      setData({ spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules, celestialBodies });
     });
   }, []);
 
@@ -82,6 +98,10 @@ export default function App() {
       items.forEach((i) => delete next[i.name]);
       return next;
     });
+  };
+
+  const updateMission = (updated: Mission) => {
+    setMissions((prev) => (prev ?? []).map((m) => (m.id === updated.id ? updated : m)));
   };
 
   return (
@@ -126,7 +146,7 @@ export default function App() {
         </div>
 
         {!data ? (
-          <div className="text-gray-500 text-sm py-8 text-center">Loading game data…</div>
+          <div className="text-gray-500 text-sm py-8 text-center">Loading game data...</div>
         ) : (
           <div className="overflow-x-auto">
             {activeTab === 'spacecraft' && (
@@ -177,6 +197,23 @@ export default function App() {
                 favorites={safeFavorites}
                 onFavoriteToggle={handleFavoriteToggle}
                 onResetAmounts={() => resetFor(data.transportableModules)}
+              />
+            )}
+            {activeTab === 'missions' && (
+              <MissionsView
+                missions={safeMissions}
+                activeMissionId={activeMissionId}
+                onSetActiveMissionId={setActiveMissionId}
+                onSetMissions={setMissions}
+                onUpdateMission={updateMission}
+                celestialBodies={data.celestialBodies}
+                spacecraft={data.spacecraft}
+                launchVehicles={data.launchVehicles}
+                groundFacilities={data.groundFacilities}
+                orbitalModules={data.orbitalModules}
+                transportableModules={data.transportableModules}
+                favorites={safeFavorites}
+                onFavoriteToggle={handleFavoriteToggle}
               />
             )}
             {activeTab === 'summary' && (

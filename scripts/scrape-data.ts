@@ -264,6 +264,51 @@ async function scrapeTransportableModules() {
   return result;
 }
 
+// ── Celestial Bodies ─────────────────────────────────────────────────────────
+
+const BODY_BASE = 'https://stockmaj.github.io/solar-expanse-wiki/celestial-bodies';
+
+async function scrapeBodiesFromPage(
+  url: string,
+  type: string,
+  nameHeader: string,
+  hasMass: boolean,
+) {
+  const doc = await fetchDoc(url);
+  const result: { name: string; type: string; group: string; mass: number | null }[] = [];
+  for (const table of doc.querySelectorAll('table')) {
+    const group = getTableTitle(table);
+    const { headers, cells } = parseRows(table);
+    const iName = idx(headers, nameHeader.toLowerCase());
+    const iMass = hasMass ? idx(headers, 'mass') : -1;
+    if (iName < 0) continue;
+    for (const row of cells) {
+      if (row.length < 2) continue;
+      const name = cellText(row[iName]);
+      if (!name) continue;
+      let mass: number | null = null;
+      if (iMass >= 0) {
+        const raw = cellText(row[iMass]);
+        const parsed = parseFloat(raw);
+        if (!isNaN(parsed)) mass = parsed;
+      }
+      result.push({ name, type, group, mass });
+    }
+  }
+  return result;
+}
+
+async function scrapeCelestialBodies() {
+  const [planets, moons, asteroids, comets, exoplanets] = await Promise.all([
+    scrapeBodiesFromPage(`${BODY_BASE}/planets.html`, 'planet', 'planet', true),
+    scrapeBodiesFromPage(`${BODY_BASE}/moons.html`, 'moon', 'moon', true),
+    scrapeBodiesFromPage(`${BODY_BASE}/asteroids.html`, 'asteroid', 'asteroid', false),
+    scrapeBodiesFromPage(`${BODY_BASE}/comets.html`, 'comet', 'comet', false),
+    scrapeBodiesFromPage(`${BODY_BASE}/exoplanets.html`, 'exoplanet', 'body', true),
+  ]);
+  return [...planets, ...moons, ...asteroids, ...comets, ...exoplanets];
+}
+
 // ── Write helpers ─────────────────────────────────────────────────────────────
 
 function writeJson(paths: string[], data: unknown) {
@@ -303,6 +348,11 @@ async function main() {
   const transportableModules = await scrapeTransportableModules();
   writeJson([`${versionedDir}/transportableModules.json`], transportableModules);
   console.log(`  → ${transportableModules.length} items`);
+
+  console.log('Scraping celestial bodies...');
+  const celestialBodies = await scrapeCelestialBodies();
+  writeJson([`${versionedDir}/celestialBodies.json`], celestialBodies);
+  console.log(`  → ${celestialBodies.length} bodies`);
 
   writeFileSync(`${dataDir}/version.json`, JSON.stringify({ version, generatedAt }, null, 2));
   console.log(`Done. Data written to src/data/${sanitizedVersion}/`);

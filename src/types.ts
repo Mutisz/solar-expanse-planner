@@ -89,3 +89,52 @@ export const ALL_RESOURCES = [
 ] as const;
 
 export type ResourceName = (typeof ALL_RESOURCES)[number];
+
+export interface CelestialBody {
+  name: string;
+  type: 'planet' | 'moon' | 'asteroid' | 'comet' | 'exoplanet';
+  group: string;
+  mass: number | null;
+}
+
+export interface Location {
+  name: string;
+  locationType: 'surface' | 'orbit';
+}
+
+export interface Mission {
+  id: string;
+  name: string;
+  origin: string;
+  target: string;
+  manualResources: Record<string, number>;
+  constructions: Record<string, number>;
+  transportableModules: Record<string, number>;
+  spacecraft: Record<string, number>;
+  launchVehicles: Record<string, number>;
+}
+
+export function createMission(id: string): Mission {
+  return {
+    id,
+    name: '',
+    origin: '',
+    target: '',
+    manualResources: {},
+    constructions: {},
+    transportableModules: {},
+    spacecraft: {},
+    launchVehicles: {},
+  };
+}
+
+export function locationsFromBodies(bodies: CelestialBody[]): Location[] {
+  const result: Location[] = [];
+  for (const body of bodies) {
+    result.push({ name: body.name, locationType: 'surface' });
+    if (body.mass !== null) {
+      result.push({ name: `${body.name} [Orbit]`, locationType: 'orbit' });
+    }
+  }
+  return result;
+}
