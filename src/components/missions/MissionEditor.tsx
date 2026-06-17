@@ -109,7 +109,11 @@ export default function MissionEditor({
           placeholder="Mission Name"
           className={`w-full ${selectClass}`}
         />
-        {locationSelect(mission.origin, (v) => onUpdate({ ...mission, origin: v }), 'Origin')}
+        {locationSelect(mission.origin, (v) => {
+          const update: Partial<Mission> = { origin: v };
+          if (v.endsWith(' [Orbit]')) update.launchVehicles = {};
+          onUpdate({ ...mission, ...update });
+        }, 'Origin')}
         {locationSelect(mission.target, (v) => onUpdate({ ...mission, target: v }), 'Target')}
       </div>
 
