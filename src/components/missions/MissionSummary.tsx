@@ -25,6 +25,7 @@ interface SummaryRow {
   amount: number;
   resources: Resources;
   workers: number;
+  energy: number;
 }
 
 function parseNum(s: string | undefined): number {
@@ -48,10 +49,10 @@ export default function MissionSummary({
   orbitalModules,
   transportableModules,
 }: Props) {
-  const allItems = new Map<string, { buildCost: Resources; workers?: string }>();
+  const allItems = new Map<string, { buildCost: Resources; workers?: string; energy?: string }>();
   for (const list of [spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) {
     for (const item of list) {
-      allItems.set(item.name, item as { buildCost: Resources; workers?: string });
+      allItems.set(item.name, item as { buildCost: Resources; workers?: string; energy?: string });
     }
   }
 
@@ -59,7 +60,7 @@ export default function MissionSummary({
 
   for (const [r, amount] of Object.entries(mission.manualResources)) {
     if (amount > 0) {
-      rows.push({ name: r, category: 'manualResource', amount, resources: { [r]: amount }, workers: 0 });
+      rows.push({ name: r, category: 'manualResource', amount, resources: { [r]: amount }, workers: 0, energy: 0 });
     }
   }
 
@@ -71,7 +72,7 @@ export default function MissionSummary({
     for (const [r, cost] of Object.entries(item.buildCost)) {
       scaled[r] = cost * qty;
     }
-    rows.push({ name, category: 'construction', amount: qty, resources: scaled, workers: parseNum(item.workers) });
+    rows.push({ name, category: 'construction', amount: qty, resources: scaled, workers: parseNum(item.workers), energy: parseNum(item.energy) });
   }
 
   for (const [name, qty] of Object.entries(mission.transportableModules)) {
@@ -82,7 +83,7 @@ export default function MissionSummary({
     for (const [r, cost] of Object.entries(mod.buildCost)) {
       scaled[r] = cost * qty;
     }
-    rows.push({ name, category: 'transportableModule', amount: qty, resources: scaled, workers: 0 });
+    rows.push({ name, category: 'transportableModule', amount: qty, resources: scaled, workers: 0, energy: 0 });
   }
 
   for (const [name, qty] of Object.entries(mission.spacecraft)) {
@@ -93,7 +94,7 @@ export default function MissionSummary({
     for (const [r, cost] of Object.entries(sc.buildCost)) {
       scaled[r] = cost * qty;
     }
-    rows.push({ name, category: 'spacecraft', amount: qty, resources: scaled, workers: 0 });
+    rows.push({ name, category: 'spacecraft', amount: qty, resources: scaled, workers: 0, energy: 0 });
   }
 
   for (const [name, qty] of Object.entries(mission.launchVehicles)) {
@@ -104,11 +105,13 @@ export default function MissionSummary({
     for (const [r, cost] of Object.entries(lv.buildCost)) {
       scaled[r] = cost * qty;
     }
-    rows.push({ name, category: 'launchVehicle', amount: qty, resources: scaled, workers: parseNum(lv.workers) });
+    rows.push({ name, category: 'launchVehicle', amount: qty, resources: scaled, workers: parseNum(lv.workers), energy: parseNum(lv.energy) });
   }
 
   const hasWorkers = rows.some((r) => r.workers > 0);
+  const hasEnergy = rows.some((r) => r.energy > 0);
   const totalWorkers = rows.reduce((s, r) => s + r.workers * r.amount, 0);
+  const totalEnergy = rows.reduce((s, r) => s + r.energy * r.amount, 0);
 
   const usedResources = ALL_RESOURCES.filter((r) => rows.some((row) => (row.resources[r] ?? 0) > 0));
 
@@ -129,6 +132,7 @@ export default function MissionSummary({
           <th className={thClass}>Category</th>
           <th className={thClass}>Qty</th>
           {hasWorkers && <th className={thClass}>Workers</th>}
+          {hasEnergy && <th className={thClass}>Energy</th>}
           {usedResources.map((r) => (
             <th key={r} className={thClass}>
               {r}
@@ -146,6 +150,11 @@ export default function MissionSummary({
             {hasWorkers && (
               <td className={`${tdClass} tabular-nums`}>
                 {row.workers > 0 ? row.workers * row.amount : '—'}
+              </td>
+            )}
+            {hasEnergy && (
+              <td className={`${tdClass} tabular-nums`}>
+                {row.energy > 0 ? row.energy * row.amount : '—'}
               </td>
             )}
             {usedResources.map((r) => (
@@ -167,6 +176,11 @@ export default function MissionSummary({
           {hasWorkers && (
             <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
               {totalWorkers > 0 ? totalWorkers : '—'}
+            </td>
+          )}
+          {hasEnergy && (
+            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+              {totalEnergy > 0 ? totalEnergy : '—'}
             </td>
           )}
           {usedResources.map((r) => (
