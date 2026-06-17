@@ -82,9 +82,3 @@ This builds the project and pushes `dist/` to the `gh-pages` branch of the repos
 - [Tailwind CSS v4](https://tailwindcss.com/)
 - [usehooks-ts](https://usehooks-ts.com/) — `useLocalStorage` hook
 - [node-html-parser](https://github.com/taoqf/node-html-parser) — wiki scraper
-
----
-
-## License
-
-GNU General Public License v3.0 — see [LICENSE](LICENSE).
