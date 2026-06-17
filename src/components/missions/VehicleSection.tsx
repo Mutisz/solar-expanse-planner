@@ -1,4 +1,12 @@
-import type { LaunchVehicle, Mission, Spacecraft, TransportableModule } from '../../types';
+import type {
+  GroundFacility,
+  LaunchVehicle,
+  Mission,
+  OrbitalModule,
+  Resources,
+  Spacecraft,
+  TransportableModule,
+} from '../../types';
 import ItemPicker from './ItemPicker';
 
 interface Props {
@@ -6,6 +14,8 @@ interface Props {
   onUpdate: (mission: Mission) => void;
   spacecraft: Spacecraft[];
   launchVehicles: LaunchVehicle[];
+  groundFacilities: GroundFacility[];
+  orbitalModules: OrbitalModule[];
   transportableModules: TransportableModule[];
   favorites: Record<string, boolean>;
   onFavoriteToggle: (name: string) => void;
@@ -21,6 +31,8 @@ export default function VehicleSection({
   onUpdate,
   spacecraft,
   launchVehicles,
+  groundFacilities,
+  orbitalModules,
   transportableModules,
   favorites,
   onFavoriteToggle,
@@ -47,10 +59,33 @@ export default function VehicleSection({
     onUpdate({ ...mission, launchVehicles: next });
   };
 
-  const payloadMass = Object.entries(mission.transportableModules).reduce((sum, [name, qty]) => {
+  const allItems = new Map<string, { buildCost: Resources }>();
+  for (const list of [spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) {
+    for (const item of list) {
+      allItems.set(item.name, item);
+    }
+  }
+
+  let payloadMass = 0;
+
+  for (const [, amount] of Object.entries(mission.manualResources)) {
+    if (amount > 0) payloadMass += amount;
+  }
+
+  for (const [name, qty] of Object.entries(mission.constructions)) {
+    if (qty <= 0) continue;
+    const item = allItems.get(name);
+    if (!item) continue;
+    for (const cost of Object.values(item.buildCost)) {
+      payloadMass += cost * qty;
+    }
+  }
+
+  for (const [name, qty] of Object.entries(mission.transportableModules)) {
+    if (qty <= 0) continue;
     const mod = transportableModules.find((m) => m.name === name);
-    return sum + (mod ? parseNum(mod.mass) * qty : 0);
-  }, 0);
+    if (mod) payloadMass += parseNum(mod.mass) * qty;
+  }
 
   const scCapacity = Object.entries(mission.spacecraft).reduce((sum, [name, qty]) => {
     const sc = spacecraft.find((s) => s.name === name);

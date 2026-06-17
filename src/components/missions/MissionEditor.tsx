@@ -147,6 +147,8 @@ export default function MissionEditor({
               onUpdate={onUpdate}
               spacecraft={spacecraft}
               launchVehicles={launchVehicles}
+              groundFacilities={groundFacilities}
+              orbitalModules={orbitalModules}
               transportableModules={transportableModules}
               favorites={favorites}
               onFavoriteToggle={onFavoriteToggle}
