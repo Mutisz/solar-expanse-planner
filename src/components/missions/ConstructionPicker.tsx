@@ -45,26 +45,28 @@ export default function ConstructionPicker({
     transportableModules,
   };
 
+  const categorySelect = (
+    <select
+      value={category}
+      onChange={(e) => setCategory(e.target.value as CategoryId)}
+      className="rounded bg-gray-800 border border-gray-700 px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
+    >
+      {CATEGORIES.map((c) => (
+        <option key={c.id} value={c.id}>
+          {c.label}
+        </option>
+      ))}
+    </select>
+  );
+
   return (
-    <div className="space-y-2">
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value as CategoryId)}
-        className="rounded bg-gray-800 border border-gray-700 px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
-      >
-        {CATEGORIES.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.label}
-          </option>
-        ))}
-      </select>
-      <ItemPicker
-        items={itemsMap[category]}
-        selected={selected}
-        onChange={onChange}
-        favorites={favorites}
-        onFavoriteToggle={onFavoriteToggle}
-      />
-    </div>
+    <ItemPicker
+      items={itemsMap[category]}
+      selected={selected}
+      onChange={onChange}
+      favorites={favorites}
+      onFavoriteToggle={onFavoriteToggle}
+      headerSlot={categorySelect}
+    />
   );
 }

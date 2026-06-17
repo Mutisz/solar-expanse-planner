@@ -7,9 +7,10 @@ interface Props {
   onChange: (name: string, value: number) => void;
   favorites: Record<string, boolean>;
   onFavoriteToggle: (name: string) => void;
+  headerSlot?: React.ReactNode;
 }
 
-export default function ItemPicker({ items, selected, onChange, favorites, onFavoriteToggle }: Props) {
+export default function ItemPicker({ items, selected, onChange, favorites, onFavoriteToggle, headerSlot }: Props) {
   const [filter, setFilter] = useState('');
 
   const sorted = sortWithFavorites(items, favorites);
@@ -19,16 +20,19 @@ export default function ItemPicker({ items, selected, onChange, favorites, onFav
 
   return (
     <div className="space-y-2">
-      <input
-        type="text"
-        placeholder="Filter..."
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        className="w-full rounded bg-gray-800 border border-gray-700 px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
-      />
+      <div className="flex gap-2">
+        {headerSlot}
+        <input
+          type="text"
+          placeholder="Filter..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="w-48 rounded bg-gray-800 border border-gray-700 px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:border-amber-500"
+        />
+      </div>
       <div className="max-h-48 overflow-y-auto space-y-1">
-        {filtered.map((item) => (
-          <div key={item.name} className="flex items-center gap-2 py-0.5">
+        {filtered.map((item, i) => (
+          <div key={`${item.name}-${i}`} className="flex items-center gap-2 py-0.5">
             <FavoriteButton
               name={item.name}
               isFavorited={!!favorites[item.name]}

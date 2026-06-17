@@ -36,10 +36,11 @@ interface Props {
   onAmountChange: (name: string, value: number) => void;
   favorites: Record<string, boolean>;
   onFavoriteToggle: (name: string) => void;
+  onResetAllAmounts: () => void;
   onResetAmounts: () => void;
 }
 
-export default function SpacecraftTable({ data, amounts, onAmountChange, favorites, onFavoriteToggle, onResetAmounts }: Props) {
+export default function SpacecraftTable({ data, amounts, onAmountChange, favorites, onFavoriteToggle, onResetAllAmounts, onResetAmounts }: Props) {
   const resources = resourcesForDataset(data);
   const sorted = sortWithFavorites(data, favorites);
   const [visible, setVisible] = useLocalStorage('spacecraft-cols', defaultVisible(COLUMN_DEFS));
@@ -52,9 +53,15 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
         <ColumnMenu defs={COLUMN_DEFS} visible={v} onChange={toggleCol} />
         <button
           onClick={onResetAmounts}
-          className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors"
+          className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer"
         >
           Reset Qty
+        </button>
+        <button
+          onClick={onResetAllAmounts}
+          className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer"
+        >
+          Reset All Qty
         </button>
       </div>
       <table className={tableClass}>

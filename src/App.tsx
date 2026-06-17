@@ -36,26 +36,30 @@ interface AppData {
   celestialBodies: CelestialBody[];
 }
 
-const TABS = [
+type ViewId = 'calculator' | 'mission-planner';
+
+const CALC_TABS = [
   { id: 'spacecraft', label: 'Spacecraft', highlight: false },
   { id: 'launch-vehicles', label: 'Launch Vehicles', highlight: false },
   { id: 'ground-facilities', label: 'Ground Facilities', highlight: false },
   { id: 'orbital-modules', label: 'Orbital Modules', highlight: false },
   { id: 'transportable-modules', label: 'Transportable Modules', highlight: false },
-  { id: 'missions', label: 'Missions', highlight: true },
   { id: 'summary', label: 'Summary', highlight: true },
 ] as const;
 
-type TabId = (typeof TABS)[number]['id'];
+type CalcTabId = (typeof CALC_TABS)[number]['id'];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useLocalStorage<TabId>('active-tab', 'spacecraft');
+  const [activeView, setActiveView] = useLocalStorage<ViewId>('active-view', 'calculator');
+  const [activeCalcTab, setActiveCalcTab] = useLocalStorage<CalcTabId>('active-calc-tab', 'spacecraft');
   const [amounts, setAmounts] = useLocalStorage<Record<string, number>>('amounts', {});
   const [favorites, setFavorites] = useLocalStorage<Record<string, boolean>>('favorites', {});
   const [missions, setMissions] = useLocalStorage<Mission[]>('missions', []);
   const [activeMissionId, setActiveMissionId] = useLocalStorage<string | null>('active-mission', null);
   const [data, setData] = useState<AppData | null>(null);
 
+  const safeView = activeView ?? 'calculator';
+  const safeCalcTab = activeCalcTab ?? 'spacecraft';
   const safeAmounts = amounts ?? {};
   const safeFavorites = favorites ?? {};
   const safeMissions = missions ?? [];
@@ -104,129 +108,152 @@ export default function App() {
     setMissions((prev) => (prev ?? []).map((m) => (m.id === updated.id ? updated : m)));
   };
 
+  const viewBtnClass = (id: ViewId) =>
+    safeView === id
+      ? 'text-amber-400 border-b-2 border-amber-400 font-semibold'
+      : 'text-gray-500 hover:text-gray-300 border-b-2 border-transparent';
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
-      <header className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-baseline gap-4">
-          <h1 className="text-xl font-bold tracking-wide text-amber-400">Solar Expanse Planner</h1>
-          <span className="text-xs text-gray-500">
-            Game data: <span className="text-gray-400">{versionData.version}</span>
-          </span>
+      <header>
+        <div className="max-w-[2560px] mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-baseline gap-4">
+            <h1 className="text-xl font-bold tracking-wide text-amber-400">Solar Expanse Planner</h1>
+            <span className="text-xs text-gray-500">
+              Game data: <span className="text-gray-400">{versionData.version}</span>
+            </span>
+          </div>
         </div>
-        <button
-          onClick={handleResetAll}
-          className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors"
-        >
-          Reset All Qty
-        </button>
       </header>
 
-      <main className="px-6 py-4 space-y-6">
-        {/* Tab bar */}
-        <div className="flex flex-wrap gap-1 border-b border-gray-800">
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const tabClass = isActive
-              ? tab.highlight
-                ? 'bg-gray-800 text-amber-300 border border-b-0 border-amber-600'
-                : 'bg-gray-800 text-amber-400 border border-b-0 border-gray-700'
-              : tab.highlight
-                ? 'text-amber-400 hover:text-amber-300 hover:bg-gray-900 border border-transparent'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900';
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-t transition-colors ${tabClass}`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
+      <main className="max-w-[2560px] mx-auto px-6 py-4 space-y-4">
+        {/* View switcher */}
+        <div className="flex gap-6 border-b border-gray-800 pb-0">
+          <button
+            onClick={() => setActiveView('calculator')}
+            className={`pb-2 text-sm tracking-wide uppercase transition-colors cursor-pointer ${viewBtnClass('calculator')}`}
+          >
+            Calculator
+          </button>
+          <button
+            onClick={() => setActiveView('mission-planner')}
+            className={`pb-2 text-sm tracking-wide uppercase transition-colors cursor-pointer ${viewBtnClass('mission-planner')}`}
+          >
+            Mission Planner
+          </button>
         </div>
 
         {!data ? (
           <div className="text-gray-500 text-sm py-8 text-center">Loading game data...</div>
+        ) : safeView === 'calculator' ? (
+          <>
+            {/* Sub-tab bar */}
+            <div className="flex flex-wrap gap-1 border-b border-gray-800">
+              {CALC_TABS.map((tab) => {
+                const isActive = safeCalcTab === tab.id;
+                const tabClass = isActive
+                  ? tab.highlight
+                    ? 'bg-gray-800 text-amber-300 border border-b-0 border-amber-600'
+                    : 'bg-gray-800 text-amber-400 border border-b-0 border-gray-700'
+                  : tab.highlight
+                    ? 'text-amber-400 hover:text-amber-300 hover:bg-gray-900 border border-transparent'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-gray-900';
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveCalcTab(tab.id)}
+                    className={`px-4 py-2 text-sm font-medium rounded-t transition-colors cursor-pointer ${tabClass}`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="overflow-x-auto">
+              {safeCalcTab === 'spacecraft' && (
+                <SpacecraftTable
+                  data={data.spacecraft}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAllAmounts={handleResetAll}
+                  onResetAmounts={() => resetFor(data.spacecraft)}
+                />
+              )}
+              {safeCalcTab === 'launch-vehicles' && (
+                <LaunchVehiclesTable
+                  data={data.launchVehicles}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAllAmounts={handleResetAll}
+                  onResetAmounts={() => resetFor(data.launchVehicles)}
+                />
+              )}
+              {safeCalcTab === 'ground-facilities' && (
+                <GroundFacilitiesTable
+                  data={data.groundFacilities}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAllAmounts={handleResetAll}
+                  onResetAmounts={() => resetFor(data.groundFacilities)}
+                />
+              )}
+              {safeCalcTab === 'orbital-modules' && (
+                <OrbitalModulesTable
+                  data={data.orbitalModules}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAllAmounts={handleResetAll}
+                  onResetAmounts={() => resetFor(data.orbitalModules)}
+                />
+              )}
+              {safeCalcTab === 'transportable-modules' && (
+                <TransportableModulesTable
+                  data={data.transportableModules}
+                  amounts={safeAmounts}
+                  onAmountChange={handleAmountChange}
+                  favorites={safeFavorites}
+                  onFavoriteToggle={handleFavoriteToggle}
+                  onResetAllAmounts={handleResetAll}
+                  onResetAmounts={() => resetFor(data.transportableModules)}
+                />
+              )}
+              {safeCalcTab === 'summary' && (
+                <SummaryTable
+                  spacecraft={data.spacecraft}
+                  launchVehicles={data.launchVehicles}
+                  groundFacilities={data.groundFacilities}
+                  orbitalModules={data.orbitalModules}
+                  transportableModules={data.transportableModules}
+                  amounts={safeAmounts}
+                />
+              )}
+            </div>
+          </>
         ) : (
-          <div className="overflow-x-auto">
-            {activeTab === 'spacecraft' && (
-              <SpacecraftTable
-                data={data.spacecraft}
-                amounts={safeAmounts}
-                onAmountChange={handleAmountChange}
-                favorites={safeFavorites}
-                onFavoriteToggle={handleFavoriteToggle}
-                onResetAmounts={() => resetFor(data.spacecraft)}
-              />
-            )}
-            {activeTab === 'launch-vehicles' && (
-              <LaunchVehiclesTable
-                data={data.launchVehicles}
-                amounts={safeAmounts}
-                onAmountChange={handleAmountChange}
-                favorites={safeFavorites}
-                onFavoriteToggle={handleFavoriteToggle}
-                onResetAmounts={() => resetFor(data.launchVehicles)}
-              />
-            )}
-            {activeTab === 'ground-facilities' && (
-              <GroundFacilitiesTable
-                data={data.groundFacilities}
-                amounts={safeAmounts}
-                onAmountChange={handleAmountChange}
-                favorites={safeFavorites}
-                onFavoriteToggle={handleFavoriteToggle}
-                onResetAmounts={() => resetFor(data.groundFacilities)}
-              />
-            )}
-            {activeTab === 'orbital-modules' && (
-              <OrbitalModulesTable
-                data={data.orbitalModules}
-                amounts={safeAmounts}
-                onAmountChange={handleAmountChange}
-                favorites={safeFavorites}
-                onFavoriteToggle={handleFavoriteToggle}
-                onResetAmounts={() => resetFor(data.orbitalModules)}
-              />
-            )}
-            {activeTab === 'transportable-modules' && (
-              <TransportableModulesTable
-                data={data.transportableModules}
-                amounts={safeAmounts}
-                onAmountChange={handleAmountChange}
-                favorites={safeFavorites}
-                onFavoriteToggle={handleFavoriteToggle}
-                onResetAmounts={() => resetFor(data.transportableModules)}
-              />
-            )}
-            {activeTab === 'missions' && (
-              <MissionsView
-                missions={safeMissions}
-                activeMissionId={activeMissionId}
-                onSetActiveMissionId={setActiveMissionId}
-                onSetMissions={setMissions}
-                onUpdateMission={updateMission}
-                celestialBodies={data.celestialBodies}
-                spacecraft={data.spacecraft}
-                launchVehicles={data.launchVehicles}
-                groundFacilities={data.groundFacilities}
-                orbitalModules={data.orbitalModules}
-                transportableModules={data.transportableModules}
-                favorites={safeFavorites}
-                onFavoriteToggle={handleFavoriteToggle}
-              />
-            )}
-            {activeTab === 'summary' && (
-              <SummaryTable
-                spacecraft={data.spacecraft}
-                launchVehicles={data.launchVehicles}
-                groundFacilities={data.groundFacilities}
-                orbitalModules={data.orbitalModules}
-                transportableModules={data.transportableModules}
-                amounts={safeAmounts}
-              />
-            )}
-          </div>
+          <MissionsView
+            missions={safeMissions}
+            activeMissionId={activeMissionId}
+            onSetActiveMissionId={setActiveMissionId}
+            onSetMissions={setMissions}
+            onUpdateMission={updateMission}
+            celestialBodies={data.celestialBodies}
+            spacecraft={data.spacecraft}
+            launchVehicles={data.launchVehicles}
+            groundFacilities={data.groundFacilities}
+            orbitalModules={data.orbitalModules}
+            transportableModules={data.transportableModules}
+            favorites={safeFavorites}
+            onFavoriteToggle={handleFavoriteToggle}
+          />
         )}
       </main>
     </div>

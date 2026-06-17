@@ -68,7 +68,10 @@ export default function VehicleSection({
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Spacecraft</h4>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Spacecraft</h4>
+          <button onClick={() => onUpdate({ ...mission, spacecraft: {} })} className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer">Reset Qty</button>
+        </div>
         <ItemPicker
           items={spacecraft}
           selected={mission.spacecraft}
@@ -90,9 +93,10 @@ export default function VehicleSection({
 
       {!isOrbitOrigin && (
         <div>
-          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
-            Launch Vehicles
-          </h4>
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Launch Vehicles</h4>
+            <button onClick={() => onUpdate({ ...mission, launchVehicles: {} })} className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer">Reset Qty</button>
+          </div>
           <ItemPicker
             items={launchVehicles}
             selected={mission.launchVehicles}

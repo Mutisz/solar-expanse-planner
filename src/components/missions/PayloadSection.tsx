@@ -90,7 +90,10 @@ export default function PayloadSection({
   return (
     <div className="space-y-4">
       <div>
-        <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Resources - additional</h4>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Resources - manual</h4>
+          <button onClick={() => onUpdate({ ...mission, manualResources: {} })} className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer">Reset Qty</button>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-4 gap-y-1">
           {ALL_RESOURCES.map((r) => (
             <div key={r} className="flex items-center gap-2">
@@ -113,9 +116,10 @@ export default function PayloadSection({
       </div>
 
       <div>
-        <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
-          Resources - for construction
-        </h4>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Resources - for construction</h4>
+          <button onClick={() => onUpdate({ ...mission, constructions: {} })} className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer">Reset Qty</button>
+        </div>
         <ConstructionPicker
           spacecraft={spacecraft}
           launchVehicles={launchVehicles}
@@ -147,9 +151,10 @@ export default function PayloadSection({
       )}
 
       <div>
-        <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">
-          Modules
-        </h4>
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Modules</h4>
+          <button onClick={() => onUpdate({ ...mission, transportableModules: {} })} className="text-xs text-gray-400 hover:text-red-400 border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer">Reset Qty</button>
+        </div>
         <ItemPicker
           items={transportableModules}
           selected={mission.transportableModules}

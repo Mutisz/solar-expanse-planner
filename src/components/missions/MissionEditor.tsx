@@ -81,10 +81,8 @@ export default function MissionEditor({
     'flex items-center gap-2 text-sm font-semibold text-gray-300 cursor-pointer select-none py-2';
 
   const locationSelect = (value: string, onChange: (v: string) => void, label: string) => (
-    <div>
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
-      <select value={value} onChange={(e) => onChange(e.target.value)} className={`w-full ${selectClass}`}>
-        <option value="">Select {label.toLowerCase()}...</option>
+    <select value={value} onChange={(e) => onChange(e.target.value)} className={`w-full ${selectClass}`}>
+      <option value="">{label}...</option>
         {BODY_TYPE_ORDER.map((type) => {
           const locs = locationGroups[type];
           if (!locs || locs.length === 0) return null;
@@ -98,23 +96,19 @@ export default function MissionEditor({
             </optgroup>
           );
         })}
-      </select>
-    </div>
+    </select>
   );
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Mission Name</label>
-          <input
-            type="text"
-            value={mission.name}
-            onChange={(e) => onUpdate({ ...mission, name: e.target.value })}
-            placeholder="Unnamed Mission"
-            className={`w-full ${selectClass}`}
-          />
-        </div>
+        <input
+          type="text"
+          value={mission.name}
+          onChange={(e) => onUpdate({ ...mission, name: e.target.value })}
+          placeholder="Mission Name"
+          className={`w-full ${selectClass}`}
+        />
         {locationSelect(mission.origin, (v) => onUpdate({ ...mission, origin: v }), 'Origin')}
         {locationSelect(mission.target, (v) => onUpdate({ ...mission, target: v }), 'Target')}
       </div>

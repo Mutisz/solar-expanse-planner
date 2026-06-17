@@ -58,7 +58,7 @@ export default function MissionsView({
   };
 
   const btnClass =
-    'text-xs border border-gray-700 rounded px-3 py-1 transition-colors';
+    'text-xs border border-gray-700 rounded px-3 py-1 transition-colors cursor-pointer';
 
   return (
     <div className="space-y-4">
