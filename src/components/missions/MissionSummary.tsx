@@ -28,7 +28,7 @@ interface SummaryRow {
 }
 
 function parseNum(s: string | undefined): number {
-  const n = parseInt(s ?? '', 10);
+  const n = parseFloat(s ?? '');
   return isNaN(n) ? 0 : n;
 }
 
