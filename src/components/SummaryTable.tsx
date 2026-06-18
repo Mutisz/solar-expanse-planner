@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ALL_RESOURCES } from '../types';
 import type { GroundFacility, LaunchVehicle, Mission, OrbitalModule, Resources, Spacecraft, TransportableModule } from '../types';
-import { tableClass, tdClass, thClass } from './tableHelpers';
+import { borderLClass, tableClass, tdClass, thClass } from './tableHelpers';
 
 type AnyItem = { name: string; buildCost: Resources; workers?: string; energy?: string };
 
@@ -99,37 +99,38 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
       <table className={tableClass}>
         <thead className="bg-gray-900">
           <tr>
-            <th className={thClass}>Name</th>
-            <th className={thClass}>Category</th>
-            <th className={`${thClass}`}>Qty</th>
-            {hasWorkers && <th className={`${thClass}`}>Workers</th>}
-            {hasEnergy && <th className={`${thClass}`}>Energy</th>}
-            {usedResources.map((r) => (
-              <th key={r} className={`${thClass}`}>
-                {r}
-              </th>
+            <th className={thClass} rowSpan={2}>Name</th>
+            <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Category</th>
+            <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Qty</th>
+            {hasWorkers && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Workers</th>}
+            {hasEnergy && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Energy</th>}
+            <th className={`${thClass} ${borderLClass} text-center`} colSpan={usedResources.length + 1}>Resources</th>
+          </tr>
+          <tr>
+            {usedResources.map((r, i) => (
+              <th key={r} className={`${thClass}${i === 0 ? ` ${borderLClass}` : ''}`}>{r}</th>
             ))}
-            <th className={`${thClass}`}>Total</th>
+            <th className={thClass}>Total</th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
             <tr key={`${row.category}-${row.name}`} className="hover:bg-gray-900/50">
               <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
-              <td className={tdClass}>{CATEGORY_LABEL[row.category]}</td>
-              <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
+              <td className={`${tdClass} ${borderLClass}`}>{CATEGORY_LABEL[row.category]}</td>
+              <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.amount}</td>
               {hasWorkers && (
-                <td className={`${tdClass} tabular-nums`}>
+                <td className={`${tdClass} ${borderLClass} tabular-nums`}>
                   {row.workers > 0 ? row.workers * row.amount : '—'}
                 </td>
               )}
               {hasEnergy && (
-                <td className={`${tdClass} tabular-nums`}>
+                <td className={`${tdClass} ${borderLClass} tabular-nums`}>
                   {row.energy > 0 ? row.energy * row.amount : '—'}
                 </td>
               )}
-              {usedResources.map((r) => (
-                <td key={r} className={`${tdClass} tabular-nums`}>
+              {usedResources.map((r, i) => (
+                <td key={r} className={`${tdClass} tabular-nums${i === 0 ? ` ${borderLClass}` : ''}`}>
                   {(row.buildCost[r] ?? 0) > 0 ? (row.buildCost[r] ?? 0) * row.amount : '—'}
                 </td>
               ))}
@@ -154,8 +155,8 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
                 {totalEnergy > 0 ? totalEnergy : '—'}
               </td>
             )}
-            {usedResources.map((r) => (
-              <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+            {usedResources.map((r, i) => (
+              <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400${i === 0 ? ` ${borderLClass}` : ''}`}>
                 {totals[r] > 0 ? totals[r] : '—'}
               </td>
             ))}

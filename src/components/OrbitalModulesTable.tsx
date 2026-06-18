@@ -10,6 +10,7 @@ import {
   ResourceHeaders,
   resourcesForDataset,
   sortWithFavorites,
+  borderLClass,
   tableClass,
   tdClass,
   thClass,
@@ -65,16 +66,19 @@ export default function OrbitalModulesTable({ data, amounts, onAmountChange, fav
       <table className={tableClass}>
         <thead className="bg-gray-900">
           <tr>
-            <th className={thClass}></th>
-            <th className={thClass}>Qty</th>
-            <th className={thClass}>Name</th>
-            {v.type        && <th className={thClass}>Type</th>}
-            {v.role        && <th className={thClass}>Role</th>}
-            {v.workers     && <th className={thClass}>Workers</th>}
-            {v.energy      && <th className={thClass}>Energy</th>}
-            {v.buildTime   && <th className={thClass}>Time (d)</th>}
-            {v.buildCost   && <ResourceHeaders resources={resources} />}
-            {v.description && <th className={thClass}>Description</th>}
+            <th className={thClass} rowSpan={2}></th>
+            <th className={thClass} rowSpan={2}>Qty</th>
+            <th className={thClass} rowSpan={2}>Name</th>
+            {v.type        && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Type</th>}
+            {v.role        && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Role</th>}
+            {v.workers     && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Workers</th>}
+            {v.energy      && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Energy</th>}
+            {v.buildTime   && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Time (d)</th>}
+            {v.buildCost   && <th className={`${thClass} ${borderLClass} text-center`} colSpan={resources.length}>Resources</th>}
+            {v.description && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Description</th>}
+          </tr>
+          <tr>
+            {v.buildCost && <ResourceHeaders resources={resources} />}
           </tr>
         </thead>
         <tbody>
@@ -87,13 +91,13 @@ export default function OrbitalModulesTable({ data, amounts, onAmountChange, fav
                 <AmountInput name={item.name} value={amounts[item.name] ?? 0} onChange={onAmountChange} />
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
-              {v.type        && <td className={tdClass}>{item.type || '—'}</td>}
-              {v.role        && <td className={tdClass}>{item.role || '—'}</td>}
-              {v.workers     && <td className={`${tdClass} tabular-nums`}>{item.workers || '—'}</td>}
-              {v.energy      && <td className={`${tdClass} tabular-nums`}>{item.energy || '—'}</td>}
-              {v.buildTime   && <td className={`${tdClass} tabular-nums`}>{item.buildTime || '—'}</td>}
+              {v.type        && <td className={`${tdClass} ${borderLClass}`}>{item.type || '—'}</td>}
+              {v.role        && <td className={`${tdClass} ${borderLClass}`}>{item.role || '—'}</td>}
+              {v.workers     && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.workers || '—'}</td>}
+              {v.energy      && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.energy || '—'}</td>}
+              {v.buildTime   && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.buildTime || '—'}</td>}
               {v.buildCost   && <ResourceCells cost={item.buildCost} resources={resources} />}
-              {v.description && <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
+              {v.description && <td className={`${tdClass} ${borderLClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
             </tr>
           ))}
         </tbody>

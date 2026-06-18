@@ -4,12 +4,14 @@ export const thClass = 'px-3 py-2 text-left text-xs font-semibold text-gray-400 
 export const tdClass = 'px-3 py-2 text-sm text-gray-300 border-b border-gray-800';
 export const tdNumClass = 'px-3 py-2 text-sm text-gray-300 border-b border-gray-800 tabular-nums';
 export const tableClass = 'w-full border-collapse text-left';
+export const borderLClass = 'border-l border-gray-700';
+export const borderRClass = 'border-r border-gray-700';
 
 export function ResourceCells({ cost, resources }: { cost: Resources; resources: readonly string[] }) {
   return (
     <>
-      {resources.map((r) => (
-        <td key={r} className={tdNumClass}>
+      {resources.map((r, i) => (
+        <td key={r} className={`${tdNumClass}${i === 0 ? ` ${borderLClass}` : ''}`}>
           {cost[r] != null ? cost[r] : '—'}
         </td>
       ))}
@@ -20,8 +22,8 @@ export function ResourceCells({ cost, resources }: { cost: Resources; resources:
 export function ResourceHeaders({ resources }: { resources: readonly string[] }) {
   return (
     <>
-      {resources.map((r) => (
-        <th key={r} className={thClass}>
+      {resources.map((r, i) => (
+        <th key={r} className={`${thClass}${i === 0 ? ` ${borderLClass}` : ''}`}>
           {r}
         </th>
       ))}

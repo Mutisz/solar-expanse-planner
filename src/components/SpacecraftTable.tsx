@@ -10,6 +10,7 @@ import {
   ResourceHeaders,
   resourcesForDataset,
   sortWithFavorites,
+  borderLClass,
   tableClass,
   tdClass,
   thClass,
@@ -71,22 +72,25 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
       <table className={tableClass}>
         <thead className="bg-gray-900">
           <tr>
-            <th className={thClass}></th>
-            <th className={thClass}>Qty</th>
-            <th className={thClass}>Name</th>
-            {v.propulsionType && <th className={thClass}>Propulsion</th>}
-            {v.mass           && <th className={thClass}>Mass (t)</th>}
-            {v.cargo          && <th className={thClass}>Cargo (t)</th>}
-            {v.fuel           && <th className={thClass}>Fuel (t)</th>}
-            {v.thrust         && <th className={thClass}>Thrust</th>}
-            {v.exhaustV       && <th className={thClass}>Exhaust V</th>}
-            {v.lifeSupport    && <th className={thClass}>Life Support</th>}
-            {v.reusable       && <th className={thClass}>Reusable</th>}
-            {v.builtAt        && <th className={thClass}>Built At</th>}
-            {v.requiresLV     && <th className={thClass}>Req. LV</th>}
-            {v.buildTime      && <th className={thClass}>Time (d)</th>}
-            {v.buildCost      && <ResourceHeaders resources={resources} />}
-            {v.description    && <th className={thClass}>Description</th>}
+            <th className={thClass} rowSpan={2}></th>
+            <th className={thClass} rowSpan={2}>Qty</th>
+            <th className={thClass} rowSpan={2}>Name</th>
+            {v.propulsionType && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Propulsion</th>}
+            {v.mass           && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Mass (t)</th>}
+            {v.cargo          && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Cargo (t)</th>}
+            {v.fuel           && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Fuel (t)</th>}
+            {v.thrust         && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Thrust</th>}
+            {v.exhaustV       && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Exhaust V</th>}
+            {v.lifeSupport    && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Life Support</th>}
+            {v.reusable       && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Reusable</th>}
+            {v.builtAt        && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Built At</th>}
+            {v.requiresLV     && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Req. LV</th>}
+            {v.buildTime      && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Time (d)</th>}
+            {v.buildCost      && <th className={`${thClass} ${borderLClass} text-center`} colSpan={resources.length}>Resources</th>}
+            {v.description    && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Description</th>}
+          </tr>
+          <tr>
+            {v.buildCost && <ResourceHeaders resources={resources} />}
           </tr>
         </thead>
         <tbody>
@@ -99,19 +103,19 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
                 <AmountInput name={item.name} value={amounts[item.name] ?? 0} onChange={onAmountChange} />
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
-              {v.propulsionType && <td className={tdClass}>{item.propulsionType}</td>}
-              {v.mass           && <td className={`${tdClass} tabular-nums`}>{item.mass}</td>}
-              {v.cargo          && <td className={`${tdClass} tabular-nums`}>{item.cargo}</td>}
-              {v.fuel           && <td className={`${tdClass} tabular-nums`}>{item.fuel}</td>}
-              {v.thrust         && <td className={tdClass}>{item.thrust}</td>}
-              {v.exhaustV       && <td className={tdClass}>{item.exhaustV}</td>}
-              {v.lifeSupport    && <td className={tdClass}>{item.lifeSupport}</td>}
-              {v.reusable       && <td className={tdClass}>{item.reusable}</td>}
-              {v.builtAt        && <td className={tdClass}>{item.builtAt}</td>}
-              {v.requiresLV     && <td className={tdClass}>{item.requiresLV}</td>}
-              {v.buildTime      && <td className={`${tdClass} tabular-nums`}>{item.buildTime || '—'}</td>}
+              {v.propulsionType && <td className={`${tdClass} ${borderLClass}`}>{item.propulsionType}</td>}
+              {v.mass           && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.mass}</td>}
+              {v.cargo          && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.cargo}</td>}
+              {v.fuel           && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.fuel}</td>}
+              {v.thrust         && <td className={`${tdClass} ${borderLClass}`}>{item.thrust}</td>}
+              {v.exhaustV       && <td className={`${tdClass} ${borderLClass}`}>{item.exhaustV}</td>}
+              {v.lifeSupport    && <td className={`${tdClass} ${borderLClass}`}>{item.lifeSupport}</td>}
+              {v.reusable       && <td className={`${tdClass} ${borderLClass}`}>{item.reusable}</td>}
+              {v.builtAt        && <td className={`${tdClass} ${borderLClass}`}>{item.builtAt}</td>}
+              {v.requiresLV     && <td className={`${tdClass} ${borderLClass}`}>{item.requiresLV}</td>}
+              {v.buildTime      && <td className={`${tdClass} ${borderLClass} tabular-nums`}>{item.buildTime || '—'}</td>}
               {v.buildCost      && <ResourceCells cost={item.buildCost} resources={resources} />}
-              {v.description    && <td className={`${tdClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
+              {v.description    && <td className={`${tdClass} ${borderLClass} max-w-xs text-gray-400 text-xs`}>{item.description}</td>}
             </tr>
           ))}
         </tbody>

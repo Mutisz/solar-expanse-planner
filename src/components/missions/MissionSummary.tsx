@@ -8,7 +8,7 @@ import type {
   TransportableModule,
 } from '../../types';
 import { ALL_RESOURCES } from '../../types';
-import { tableClass, tdClass, thClass } from '../tableHelpers';
+import { borderLClass, tableClass, tdClass, thClass } from '../tableHelpers';
 
 interface Props {
   mission: Mission;
@@ -127,12 +127,15 @@ export default function MissionSummary({
           <table className={tableClass}>
             <thead className="bg-gray-900">
               <tr>
-                <th className={thClass}>Name</th>
-                <th className={thClass}>Qty</th>
-                {hasWorkers && <th className={thClass}>Workers</th>}
-                {hasEnergy && <th className={thClass}>Energy</th>}
-                {usedResources.map((r) => (
-                  <th key={r} className={thClass}>{r}</th>
+                <th className={thClass} rowSpan={2}>Name</th>
+                <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Qty</th>
+                {hasWorkers && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Workers</th>}
+                {hasEnergy && <th className={`${thClass} ${borderLClass}`} rowSpan={2}>Energy</th>}
+                <th className={`${thClass} ${borderLClass} text-center`} colSpan={usedResources.length + 1}>Resources</th>
+              </tr>
+              <tr>
+                {usedResources.map((r, i) => (
+                  <th key={r} className={`${thClass}${i === 0 ? ` ${borderLClass}` : ''}`}>{r}</th>
                 ))}
                 <th className={thClass}>Total</th>
               </tr>
@@ -141,19 +144,19 @@ export default function MissionSummary({
               {resourceRows.map((row, i) => (
                 <tr key={`${row.category}-${row.name}-${i}`} className="hover:bg-gray-900/50">
                   <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
-                  <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
+                  <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.amount}</td>
                   {hasWorkers && (
-                    <td className={`${tdClass} tabular-nums`}>
+                    <td className={`${tdClass} ${borderLClass} tabular-nums`}>
                       {row.workers > 0 ? row.workers * row.amount : '—'}
                     </td>
                   )}
                   {hasEnergy && (
-                    <td className={`${tdClass} tabular-nums`}>
+                    <td className={`${tdClass} ${borderLClass} tabular-nums`}>
                       {row.energy > 0 ? row.energy * row.amount : '—'}
                     </td>
                   )}
-                  {usedResources.map((r) => (
-                    <td key={r} className={`${tdClass} tabular-nums`}>
+                  {usedResources.map((r, i) => (
+                    <td key={r} className={`${tdClass} tabular-nums${i === 0 ? ` ${borderLClass}` : ''}`}>
                       {(row.resources[r] ?? 0) > 0 ? row.resources[r] : '—'}
                     </td>
                   ))}
@@ -176,8 +179,8 @@ export default function MissionSummary({
                     {totalEnergy > 0 ? totalEnergy : '—'}
                   </td>
                 )}
-                {usedResources.map((r) => (
-                  <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                {usedResources.map((r, i) => (
+                  <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400${i === 0 ? ` ${borderLClass}` : ''}`}>
                     {resourceTotals[r] > 0 ? resourceTotals[r] : '—'}
                   </td>
                 ))}
@@ -199,18 +202,18 @@ export default function MissionSummary({
                 <thead className="bg-gray-900">
                   <tr>
                     <th className={thClass}>Name</th>
-                    <th className={thClass}>Qty</th>
-                    <th className={thClass}>Mass (t)</th>
-                    <th className={thClass}>Total Mass (t)</th>
+                    <th className={`${thClass} ${borderLClass}`}>Qty</th>
+                    <th className={`${thClass} ${borderLClass}`}>Mass (t)</th>
+                    <th className={`${thClass} ${borderLClass}`}>Total Mass (t)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {moduleRows.map((row, i) => (
                     <tr key={`${row.name}-${i}`} className="hover:bg-gray-900/50">
                       <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
-                      <td className={`${tdClass} tabular-nums`}>{row.qty}</td>
-                      <td className={`${tdClass} tabular-nums`}>{row.mass || '—'}</td>
-                      <td className={`${tdClass} tabular-nums`}>{row.mass * row.qty || '—'}</td>
+                      <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.qty}</td>
+                      <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.mass || '—'}</td>
+                      <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.mass * row.qty || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -233,16 +236,16 @@ export default function MissionSummary({
                 <thead className="bg-gray-900">
                   <tr>
                     <th className={thClass}>Name</th>
-                    <th className={thClass}>Type</th>
-                    <th className={thClass}>Qty</th>
+                    <th className={`${thClass} ${borderLClass}`}>Type</th>
+                    <th className={`${thClass} ${borderLClass}`}>Qty</th>
                   </tr>
                 </thead>
                 <tbody>
                   {vehicleRows.map((row) => (
                     <tr key={`${row.type}-${row.name}`} className="hover:bg-gray-900/50">
                       <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
-                      <td className={tdClass}>{row.type}</td>
-                      <td className={`${tdClass} tabular-nums`}>{row.qty}</td>
+                      <td className={`${tdClass} ${borderLClass}`}>{row.type}</td>
+                      <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.qty}</td>
                     </tr>
                   ))}
                 </tbody>
