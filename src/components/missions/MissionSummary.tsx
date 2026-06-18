@@ -19,27 +19,10 @@ interface Props {
   transportableModules: TransportableModule[];
 }
 
-interface SummaryRow {
-  name: string;
-  category: string;
-  amount: number;
-  resources: Resources;
-  workers: number;
-  energy: number;
-}
-
 function parseNum(s: string | undefined): number {
   const n = parseFloat(s ?? '');
   return isNaN(n) ? 0 : n;
 }
-
-const CATEGORY_LABELS: Record<string, string> = {
-  manualResource: 'Manual Resource',
-  construction: 'Construction',
-  transportableModule: 'Transportable Module',
-  spacecraft: 'Spacecraft',
-  launchVehicle: 'Launch Vehicle',
-};
 
 export default function MissionSummary({
   mission,
@@ -56,11 +39,21 @@ export default function MissionSummary({
     }
   }
 
-  const rows: SummaryRow[] = [];
+  // --- Resources section (manual + construction-derived) ---
+  interface ResourceRow {
+    name: string;
+    category: string;
+    amount: number;
+    resources: Resources;
+    workers: number;
+    energy: number;
+  }
+
+  const resourceRows: ResourceRow[] = [];
 
   for (const [r, amount] of Object.entries(mission.manualResources)) {
     if (amount > 0) {
-      rows.push({ name: r, category: 'manualResource', amount, resources: { [r]: amount }, workers: 0, energy: 0 });
+      resourceRows.push({ name: r, category: 'Manual', amount, resources: { [r]: amount }, workers: 0, energy: 0 });
     }
   }
 
@@ -72,127 +65,192 @@ export default function MissionSummary({
     for (const [r, cost] of Object.entries(item.buildCost)) {
       scaled[r] = cost * qty;
     }
-    rows.push({ name, category: 'construction', amount: qty, resources: scaled, workers: parseNum(item.workers), energy: parseNum(item.energy) });
+    resourceRows.push({ name, category: 'Construction', amount: qty, resources: scaled, workers: parseNum(item.workers), energy: parseNum(item.energy) });
   }
 
+  const hasWorkers = resourceRows.some((r) => r.workers > 0);
+  const hasEnergy = resourceRows.some((r) => r.energy > 0);
+  const totalWorkers = resourceRows.reduce((s, r) => s + r.workers * r.amount, 0);
+  const totalEnergy = resourceRows.reduce((s, r) => s + r.energy * r.amount, 0);
+  const usedResources = ALL_RESOURCES.filter((r) => resourceRows.some((row) => (row.resources[r] ?? 0) > 0));
+  const resourceTotals: Resources = {};
+  for (const r of usedResources) {
+    resourceTotals[r] = resourceRows.reduce((sum, row) => sum + (row.resources[r] ?? 0), 0);
+  }
+
+  // --- Modules section ---
+  interface ModuleRow {
+    name: string;
+    qty: number;
+    mass: number;
+  }
+
+  const moduleRows: ModuleRow[] = [];
   for (const [name, qty] of Object.entries(mission.transportableModules)) {
     if (qty <= 0) continue;
     const mod = transportableModules.find((m) => m.name === name);
     if (!mod) continue;
-    const scaled: Resources = {};
-    for (const [r, cost] of Object.entries(mod.buildCost)) {
-      scaled[r] = cost * qty;
-    }
-    rows.push({ name, category: 'transportableModule', amount: qty, resources: scaled, workers: 0, energy: 0 });
+    moduleRows.push({ name, qty, mass: parseNum(mod.mass) });
+  }
+  const totalModuleMass = moduleRows.reduce((s, r) => s + r.mass * r.qty, 0);
+
+  // --- Vehicles section ---
+  interface VehicleRow {
+    name: string;
+    type: string;
+    qty: number;
   }
 
+  const vehicleRows: VehicleRow[] = [];
   for (const [name, qty] of Object.entries(mission.spacecraft)) {
     if (qty <= 0) continue;
-    const sc = spacecraft.find((s) => s.name === name);
-    if (!sc) continue;
-    const scaled: Resources = {};
-    for (const [r, cost] of Object.entries(sc.buildCost)) {
-      scaled[r] = cost * qty;
-    }
-    rows.push({ name, category: 'spacecraft', amount: qty, resources: scaled, workers: 0, energy: 0 });
+    vehicleRows.push({ name, type: 'Spacecraft', qty });
   }
-
   for (const [name, qty] of Object.entries(mission.launchVehicles)) {
     if (qty <= 0) continue;
-    const lv = launchVehicles.find((l) => l.name === name);
-    if (!lv) continue;
-    const scaled: Resources = {};
-    for (const [r, cost] of Object.entries(lv.buildCost)) {
-      scaled[r] = cost * qty;
-    }
-    rows.push({ name, category: 'launchVehicle', amount: qty, resources: scaled, workers: parseNum(lv.workers), energy: parseNum(lv.energy) });
+    vehicleRows.push({ name, type: 'Launch Vehicle', qty });
   }
 
-  const hasWorkers = rows.some((r) => r.workers > 0);
-  const hasEnergy = rows.some((r) => r.energy > 0);
-  const totalWorkers = rows.reduce((s, r) => s + r.workers * r.amount, 0);
-  const totalEnergy = rows.reduce((s, r) => s + r.energy * r.amount, 0);
+  const hasNothing = resourceRows.length === 0 && moduleRows.length === 0 && vehicleRows.length === 0;
 
-  const usedResources = ALL_RESOURCES.filter((r) => rows.some((row) => (row.resources[r] ?? 0) > 0));
-
-  const totals: Resources = {};
-  for (const r of usedResources) {
-    totals[r] = rows.reduce((sum, row) => sum + (row.resources[r] ?? 0), 0);
-  }
-
-  if (rows.length === 0) {
+  if (hasNothing) {
     return <p className="text-sm text-gray-500 italic">Add payload or vehicles to see the summary.</p>;
   }
 
+  const sectionHeading = 'text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2';
+
   return (
-    <table className={tableClass}>
-      <thead className="bg-gray-900">
-        <tr>
-          <th className={thClass}>Name</th>
-          <th className={thClass}>Category</th>
-          <th className={thClass}>Qty</th>
-          {hasWorkers && <th className={thClass}>Workers</th>}
-          {hasEnergy && <th className={thClass}>Energy</th>}
-          {usedResources.map((r) => (
-            <th key={r} className={thClass}>
-              {r}
-            </th>
-          ))}
-          <th className={thClass}>Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, i) => (
-          <tr key={`${row.category}-${row.name}-${i}`} className="hover:bg-gray-900/50">
-            <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
-            <td className={tdClass}>{CATEGORY_LABELS[row.category]}</td>
-            <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
-            {hasWorkers && (
-              <td className={`${tdClass} tabular-nums`}>
-                {row.workers > 0 ? row.workers * row.amount : '—'}
-              </td>
-            )}
-            {hasEnergy && (
-              <td className={`${tdClass} tabular-nums`}>
-                {row.energy > 0 ? row.energy * row.amount : '—'}
-              </td>
-            )}
-            {usedResources.map((r) => (
-              <td key={r} className={`${tdClass} tabular-nums`}>
-                {(row.resources[r] ?? 0) > 0 ? row.resources[r] : '—'}
-              </td>
-            ))}
-            <td className={`${tdClass} tabular-nums font-medium text-gray-100`}>
-              {usedResources.reduce((sum, r) => sum + (row.resources[r] ?? 0), 0)}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-      <tfoot>
-        <tr className="bg-gray-900 border-t-2 border-gray-600">
-          <td className={`${tdClass} font-bold text-gray-100`} colSpan={3}>
-            Total
-          </td>
-          {hasWorkers && (
-            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-              {totalWorkers > 0 ? totalWorkers : '—'}
-            </td>
+    <div className="space-y-6">
+      {resourceRows.length > 0 && (
+        <div>
+          <h4 className={sectionHeading}>Resources</h4>
+          <table className={tableClass}>
+            <thead className="bg-gray-900">
+              <tr>
+                <th className={thClass}>Name</th>
+                <th className={thClass}>Qty</th>
+                {hasWorkers && <th className={thClass}>Workers</th>}
+                {hasEnergy && <th className={thClass}>Energy</th>}
+                {usedResources.map((r) => (
+                  <th key={r} className={thClass}>{r}</th>
+                ))}
+                <th className={thClass}>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {resourceRows.map((row, i) => (
+                <tr key={`${row.category}-${row.name}-${i}`} className="hover:bg-gray-900/50">
+                  <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
+                  <td className={`${tdClass} tabular-nums`}>{row.amount}</td>
+                  {hasWorkers && (
+                    <td className={`${tdClass} tabular-nums`}>
+                      {row.workers > 0 ? row.workers * row.amount : '—'}
+                    </td>
+                  )}
+                  {hasEnergy && (
+                    <td className={`${tdClass} tabular-nums`}>
+                      {row.energy > 0 ? row.energy * row.amount : '—'}
+                    </td>
+                  )}
+                  {usedResources.map((r) => (
+                    <td key={r} className={`${tdClass} tabular-nums`}>
+                      {(row.resources[r] ?? 0) > 0 ? row.resources[r] : '—'}
+                    </td>
+                  ))}
+                  <td className={`${tdClass} tabular-nums font-medium text-gray-100`}>
+                    {usedResources.reduce((sum, r) => sum + (row.resources[r] ?? 0), 0)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="bg-gray-900 border-t-2 border-gray-600">
+                <td className={`${tdClass} font-bold text-gray-100`} colSpan={2}>Total</td>
+                {hasWorkers && (
+                  <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                    {totalWorkers > 0 ? totalWorkers : '—'}
+                  </td>
+                )}
+                {hasEnergy && (
+                  <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                    {totalEnergy > 0 ? totalEnergy : '—'}
+                  </td>
+                )}
+                {usedResources.map((r) => (
+                  <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                    {resourceTotals[r] > 0 ? resourceTotals[r] : '—'}
+                  </td>
+                ))}
+                <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                  {Object.values(resourceTotals).reduce((a, b) => a + b, 0)}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      )}
+
+      {(moduleRows.length > 0 || vehicleRows.length > 0) && (
+        <div className="flex gap-6">
+          {moduleRows.length > 0 && (
+            <div className="flex-1">
+              <h4 className={sectionHeading}>Modules</h4>
+              <table className={tableClass}>
+                <thead className="bg-gray-900">
+                  <tr>
+                    <th className={thClass}>Name</th>
+                    <th className={thClass}>Qty</th>
+                    <th className={thClass}>Mass (t)</th>
+                    <th className={thClass}>Total Mass (t)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {moduleRows.map((row, i) => (
+                    <tr key={`${row.name}-${i}`} className="hover:bg-gray-900/50">
+                      <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
+                      <td className={`${tdClass} tabular-nums`}>{row.qty}</td>
+                      <td className={`${tdClass} tabular-nums`}>{row.mass || '—'}</td>
+                      <td className={`${tdClass} tabular-nums`}>{row.mass * row.qty || '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-gray-900 border-t-2 border-gray-600">
+                    <td className={`${tdClass} font-bold text-gray-100`} colSpan={3}>Total</td>
+                    <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
+                      {totalModuleMass > 0 ? totalModuleMass : '—'}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           )}
-          {hasEnergy && (
-            <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-              {totalEnergy > 0 ? totalEnergy : '—'}
-            </td>
+
+          {vehicleRows.length > 0 && (
+            <div className="flex-1">
+              <h4 className={sectionHeading}>Vehicles</h4>
+              <table className={tableClass}>
+                <thead className="bg-gray-900">
+                  <tr>
+                    <th className={thClass}>Name</th>
+                    <th className={thClass}>Type</th>
+                    <th className={thClass}>Qty</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vehicleRows.map((row) => (
+                    <tr key={`${row.type}-${row.name}`} className="hover:bg-gray-900/50">
+                      <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
+                      <td className={tdClass}>{row.type}</td>
+                      <td className={`${tdClass} tabular-nums`}>{row.qty}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
-          {usedResources.map((r) => (
-            <td key={r} className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-              {totals[r] > 0 ? totals[r] : '—'}
-            </td>
-          ))}
-          <td className={`${tdClass} tabular-nums font-bold text-amber-400`}>
-            {Object.values(totals).reduce((a, b) => a + b, 0)}
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+        </div>
+      )}
+    </div>
   );
 }

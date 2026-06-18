@@ -3,7 +3,6 @@ import type {
   LaunchVehicle,
   Mission,
   OrbitalModule,
-  Resources,
   Spacecraft,
   TransportableModule,
 } from '../../types';
@@ -64,29 +63,6 @@ export default function PayloadSection({
     onUpdate({ ...mission, transportableModules: next });
   };
 
-  const allConstructions = new Map<string, { buildCost: Resources }>();
-  for (const list of [spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) {
-    for (const item of list) {
-      allConstructions.set(item.name, item);
-    }
-  }
-
-  const constructionResources: Record<string, number> = {};
-  for (const [name, qty] of Object.entries(mission.constructions)) {
-    const item = allConstructions.get(name);
-    if (!item) continue;
-    for (const [r, cost] of Object.entries(item.buildCost)) {
-      constructionResources[r] = (constructionResources[r] ?? 0) + cost * qty;
-    }
-  }
-
-  const totalResources: Record<string, number> = { ...mission.manualResources };
-  for (const [r, amount] of Object.entries(constructionResources)) {
-    totalResources[r] = (totalResources[r] ?? 0) + amount;
-  }
-
-  const hasConstructionResources = Object.keys(constructionResources).length > 0;
-
   return (
     <div className="space-y-4">
       <div>
@@ -133,23 +109,6 @@ export default function PayloadSection({
         />
       </div>
 
-      {hasConstructionResources && (
-        <div>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-            Construction-derived Resources
-          </h4>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
-            {Object.entries(constructionResources)
-              .filter(([, v]) => v > 0)
-              .map(([r, v]) => (
-                <span key={r}>
-                  {r}: {v}
-                </span>
-              ))}
-          </div>
-        </div>
-      )}
-
       <div>
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Modules</h4>
@@ -164,20 +123,6 @@ export default function PayloadSection({
         />
       </div>
 
-      {Object.values(totalResources).some((v) => v > 0) && (
-        <div>
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-            Total Payload Resources
-          </h4>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-amber-400">
-            {ALL_RESOURCES.filter((r) => (totalResources[r] ?? 0) > 0).map((r) => (
-              <span key={r}>
-                {r}: {totalResources[r]}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
