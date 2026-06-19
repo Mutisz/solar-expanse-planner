@@ -77,7 +77,16 @@ export default function App() {
       transportableModulesGlob[`./data/${versionDir}/transportableModules.json`](),
       celestialBodiesGlob[`./data/${versionDir}/celestialBodies.json`](),
     ]).then(([spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules, celestialBodies]) => {
-      setData({ spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules, celestialBodies });
+      const withIds = <T,>(items: T[], prefix: string) =>
+        items.map((item, i) => ({ ...item, id: `${prefix}-${i}` }));
+      setData({
+        spacecraft: withIds(spacecraft, 'sc'),
+        launchVehicles: withIds(launchVehicles, 'lv'),
+        groundFacilities: withIds(groundFacilities, 'gf'),
+        orbitalModules: withIds(orbitalModules, 'om'),
+        transportableModules: withIds(transportableModules, 'tm'),
+        celestialBodies,
+      });
     });
   }, []);
 
@@ -99,10 +108,10 @@ export default function App() {
 
   const handleResetAll = () => setAmounts({});
 
-  const resetFor = (items: { name: string }[]) => {
+  const resetFor = (items: { id: string }[]) => {
     setAmounts((prev) => {
       const next = { ...(prev ?? {}) };
-      items.forEach((i) => delete next[i.name]);
+      items.forEach((i) => delete next[i.id]);
       return next;
     });
   };

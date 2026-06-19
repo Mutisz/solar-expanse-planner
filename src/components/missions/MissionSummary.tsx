@@ -32,10 +32,10 @@ export default function MissionSummary({
   orbitalModules,
   transportableModules,
 }: Props) {
-  const allItems = new Map<string, { buildCost: Resources; workers?: string; energy?: string }>();
+  const allItems = new Map<string, { name: string; buildCost: Resources; workers?: string; energy?: string }>();
   for (const list of [spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) {
     for (const item of list) {
-      allItems.set(item.name, item as { buildCost: Resources; workers?: string; energy?: string });
+      allItems.set(item.id, item as { name: string; buildCost: Resources; workers?: string; energy?: string });
     }
   }
 
@@ -57,15 +57,15 @@ export default function MissionSummary({
     }
   }
 
-  for (const [name, qty] of Object.entries(mission.constructions)) {
+  for (const [id, qty] of Object.entries(mission.constructions)) {
     if (qty <= 0) continue;
-    const item = allItems.get(name);
+    const item = allItems.get(id);
     if (!item) continue;
     const scaled: Resources = {};
     for (const [r, cost] of Object.entries(item.buildCost)) {
       scaled[r] = cost * qty;
     }
-    resourceRows.push({ name, category: 'Construction', amount: qty, resources: scaled, workers: parseNum(item.workers), energy: parseNum(item.energy) });
+    resourceRows.push({ name: item.name, category: 'Construction', amount: qty, resources: scaled, workers: parseNum(item.workers), energy: parseNum(item.energy) });
   }
 
   const hasWorkers = resourceRows.some((r) => r.workers > 0);
@@ -86,11 +86,11 @@ export default function MissionSummary({
   }
 
   const moduleRows: ModuleRow[] = [];
-  for (const [name, qty] of Object.entries(mission.transportableModules)) {
+  for (const [id, qty] of Object.entries(mission.transportableModules)) {
     if (qty <= 0) continue;
-    const mod = transportableModules.find((m) => m.name === name);
+    const mod = transportableModules.find((m) => m.id === id);
     if (!mod) continue;
-    moduleRows.push({ name, qty, mass: parseNum(mod.mass) });
+    moduleRows.push({ name: mod.name, qty, mass: parseNum(mod.mass) });
   }
   const totalModuleMass = moduleRows.reduce((s, r) => s + r.mass * r.qty, 0);
 
@@ -102,13 +102,15 @@ export default function MissionSummary({
   }
 
   const vehicleRows: VehicleRow[] = [];
-  for (const [name, qty] of Object.entries(mission.spacecraft)) {
+  for (const [id, qty] of Object.entries(mission.spacecraft)) {
     if (qty <= 0) continue;
-    vehicleRows.push({ name, type: 'Spacecraft', qty });
+    const sc = spacecraft.find((s) => s.id === id);
+    vehicleRows.push({ name: sc?.name ?? id, type: 'Spacecraft', qty });
   }
-  for (const [name, qty] of Object.entries(mission.launchVehicles)) {
+  for (const [id, qty] of Object.entries(mission.launchVehicles)) {
     if (qty <= 0) continue;
-    vehicleRows.push({ name, type: 'Launch Vehicle', qty });
+    const lv = launchVehicles.find((l) => l.id === id);
+    vehicleRows.push({ name: lv?.name ?? id, type: 'Launch Vehicle', qty });
   }
 
   const hasNothing = resourceRows.length === 0 && moduleRows.length === 0 && vehicleRows.length === 0;

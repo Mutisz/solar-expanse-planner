@@ -1,6 +1,7 @@
 export type Resources = Record<string, number>;
 
 export interface Spacecraft {
+  id: string;
   name: string;
   propulsionType: string;
   mass: string;
@@ -18,6 +19,7 @@ export interface Spacecraft {
 }
 
 export interface LaunchVehicle {
+  id: string;
   name: string;
   propulsionType: string;
   payload: string;
@@ -36,6 +38,7 @@ export interface LaunchVehicle {
 }
 
 export interface GroundFacility {
+  id: string;
   name: string;
   type: string;
   role: string;
@@ -52,6 +55,7 @@ export interface GroundFacility {
 }
 
 export interface OrbitalModule {
+  id: string;
   name: string;
   type: string;
   role: string;
@@ -63,6 +67,7 @@ export interface OrbitalModule {
 }
 
 export interface TransportableModule {
+  id: string;
   name: string;
   type: string;
   mass: string;

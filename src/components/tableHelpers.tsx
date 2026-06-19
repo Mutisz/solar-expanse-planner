@@ -32,13 +32,13 @@ export function ResourceHeaders({ resources }: { resources: readonly string[] })
 }
 
 export function AmountInput({
-  name,
+  id,
   value,
   onChange,
 }: {
-  name: string;
+  id: string;
   value: number;
-  onChange: (name: string, value: number) => void;
+  onChange: (id: string, value: number) => void;
 }) {
   return (
     <input
@@ -49,33 +49,33 @@ export function AmountInput({
       placeholder="0"
       onChange={(e) => {
         const v = parseInt(e.target.value, 10);
-        onChange(name, isNaN(v) || v < 0 ? 0 : Math.floor(v));
+        onChange(id, isNaN(v) || v < 0 ? 0 : Math.floor(v));
       }}
       className="w-16 rounded bg-gray-800 border border-gray-700 px-2 py-1 text-sm text-center text-gray-200 focus:outline-none focus:border-amber-500"
     />
   );
 }
 
-export function sortWithFavorites<T extends { name: string }>(items: T[], favorites: Record<string, boolean>): T[] {
+export function sortWithFavorites<T extends { id: string; name: string }>(items: T[], favorites: Record<string, boolean>): T[] {
   const cmp = (a: T, b: T) => a.name.localeCompare(b.name);
   return [
-    ...items.filter((i) => favorites[i.name]).sort(cmp),
-    ...items.filter((i) => !favorites[i.name]).sort(cmp),
+    ...items.filter((i) => favorites[i.id]).sort(cmp),
+    ...items.filter((i) => !favorites[i.id]).sort(cmp),
   ];
 }
 
 export function FavoriteButton({
-  name,
+  id,
   isFavorited,
   onToggle,
 }: {
-  name: string;
+  id: string;
   isFavorited: boolean;
-  onToggle: (name: string) => void;
+  onToggle: (id: string) => void;
 }) {
   return (
     <button
-      onClick={() => onToggle(name)}
+      onClick={() => onToggle(id)}
       title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
       className={`text-xl leading-none transition-all cursor-pointer hover:scale-125 ${isFavorited ? 'text-amber-400 hover:text-amber-300' : 'text-gray-600 hover:text-amber-400'}`}
     >

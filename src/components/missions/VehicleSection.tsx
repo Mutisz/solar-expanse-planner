@@ -62,7 +62,7 @@ export default function VehicleSection({
   const allItems = new Map<string, { buildCost: Resources }>();
   for (const list of [spacecraft, launchVehicles, groundFacilities, orbitalModules, transportableModules]) {
     for (const item of list) {
-      allItems.set(item.name, item);
+      allItems.set(item.id, item);
     }
   }
 
@@ -72,28 +72,28 @@ export default function VehicleSection({
     if (amount > 0) payloadMass += amount;
   }
 
-  for (const [name, qty] of Object.entries(mission.constructions)) {
+  for (const [id, qty] of Object.entries(mission.constructions)) {
     if (qty <= 0) continue;
-    const item = allItems.get(name);
+    const item = allItems.get(id);
     if (!item) continue;
     for (const cost of Object.values(item.buildCost)) {
       payloadMass += cost * qty;
     }
   }
 
-  for (const [name, qty] of Object.entries(mission.transportableModules)) {
+  for (const [id, qty] of Object.entries(mission.transportableModules)) {
     if (qty <= 0) continue;
-    const mod = transportableModules.find((m) => m.name === name);
+    const mod = transportableModules.find((m) => m.id === id);
     if (mod) payloadMass += parseNum(mod.mass) * qty;
   }
 
-  const scCapacity = Object.entries(mission.spacecraft).reduce((sum, [name, qty]) => {
-    const sc = spacecraft.find((s) => s.name === name);
+  const scCapacity = Object.entries(mission.spacecraft).reduce((sum, [id, qty]) => {
+    const sc = spacecraft.find((s) => s.id === id);
     return sum + (sc ? parseNum(sc.cargo) * qty : 0);
   }, 0);
 
-  const lvCapacity = Object.entries(mission.launchVehicles).reduce((sum, [name, qty]) => {
-    const lv = launchVehicles.find((l) => l.name === name);
+  const lvCapacity = Object.entries(mission.launchVehicles).reduce((sum, [id, qty]) => {
+    const lv = launchVehicles.find((l) => l.id === id);
     return sum + (lv ? parseNum(lv.payload) * qty : 0);
   }, 0);
 

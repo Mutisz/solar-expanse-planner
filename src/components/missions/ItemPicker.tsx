@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { AmountInput, FavoriteButton, sortWithFavorites } from '../tableHelpers';
 
 interface Props {
-  items: { name: string }[];
+  items: { id: string; name: string }[];
+  allItems?: { id: string; name: string }[];
   selected: Record<string, number>;
-  onChange: (name: string, value: number) => void;
+  onChange: (id: string, value: number) => void;
   favorites: Record<string, boolean>;
-  onFavoriteToggle: (name: string) => void;
+  onFavoriteToggle: (id: string) => void;
   headerSlot?: React.ReactNode;
 }
 
-export default function ItemPicker({ items, selected, onChange, favorites, onFavoriteToggle, headerSlot }: Props) {
+export default function ItemPicker({ items, allItems, selected, onChange, favorites, onFavoriteToggle, headerSlot }: Props) {
   const [filter, setFilter] = useState('');
 
   const sorted = sortWithFavorites(items, favorites);
@@ -18,9 +19,10 @@ export default function ItemPicker({ items, selected, onChange, favorites, onFav
     ? sorted.filter((i) => i.name.toLowerCase().includes(filter.toLowerCase()))
     : sorted;
 
+  const nameById = new Map((allItems ?? items).map((i) => [i.id, i.name]));
   const selectedEntries = Object.entries(selected)
     .filter(([, qty]) => qty > 0)
-    .sort(([a], [b]) => a.localeCompare(b));
+    .sort(([a], [b]) => (nameById.get(a) ?? a).localeCompare(nameById.get(b) ?? b));
 
   return (
     <div className="flex gap-4">
@@ -36,16 +38,16 @@ export default function ItemPicker({ items, selected, onChange, favorites, onFav
           />
         </div>
         <div className="max-h-48 overflow-y-auto space-y-1">
-          {filtered.map((item, i) => (
-            <div key={`${item.name}-${i}`} className="flex items-center gap-2 py-0.5">
+          {filtered.map((item) => (
+            <div key={item.id} className="flex items-center gap-2 py-0.5">
               <FavoriteButton
-                name={item.name}
-                isFavorited={!!favorites[item.name]}
+                id={item.id}
+                isFavorited={!!favorites[item.id]}
                 onToggle={onFavoriteToggle}
               />
               <AmountInput
-                name={item.name}
-                value={selected[item.name] ?? 0}
+                id={item.id}
+                value={selected[item.id] ?? 0}
                 onChange={onChange}
               />
               <span className="flex-1 text-sm text-gray-300 truncate">{item.name}</span>
@@ -61,14 +63,14 @@ export default function ItemPicker({ items, selected, onChange, favorites, onFav
         <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide py-1 border border-transparent">Selected</p>
         <div className="max-h-48 overflow-y-auto space-y-1">
           {selectedEntries.length > 0 ? (
-            selectedEntries.map(([name]) => (
-              <div key={name} className="flex items-center gap-2 py-0.5">
+            selectedEntries.map(([id]) => (
+              <div key={id} className="flex items-center gap-2 py-0.5">
                 <AmountInput
-                  name={name}
-                  value={selected[name] ?? 0}
+                  id={id}
+                  value={selected[id] ?? 0}
                   onChange={onChange}
                 />
-                <span className="flex-1 text-sm text-gray-300 truncate">{name}</span>
+                <span className="flex-1 text-sm text-gray-300 truncate">{nameById.get(id) ?? id}</span>
               </div>
             ))
           ) : (

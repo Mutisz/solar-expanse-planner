@@ -37,7 +37,7 @@ export default function ConstructionPicker({
 }: Props) {
   const [category, setCategory] = useState<CategoryId>('spacecraft');
 
-  const itemsMap: Record<CategoryId, { name: string }[]> = {
+  const itemsMap: Record<CategoryId, { id: string; name: string }[]> = {
     spacecraft,
     launchVehicles,
     groundFacilities,
@@ -59,9 +59,18 @@ export default function ConstructionPicker({
     </select>
   );
 
+  const allItems = [
+    ...spacecraft,
+    ...launchVehicles,
+    ...groundFacilities,
+    ...orbitalModules,
+    ...transportableModules,
+  ];
+
   return (
     <ItemPicker
       items={itemsMap[category]}
+      allItems={allItems}
       selected={selected}
       onChange={onChange}
       favorites={favorites}

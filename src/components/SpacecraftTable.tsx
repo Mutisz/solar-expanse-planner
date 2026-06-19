@@ -94,13 +94,13 @@ export default function SpacecraftTable({ data, amounts, onAmountChange, favorit
           </tr>
         </thead>
         <tbody>
-          {filtered.map((item, i) => (
-            <tr key={`${item.name}-${i}`} className="hover:bg-gray-900/50">
+          {filtered.map((item) => (
+            <tr key={item.id} className="hover:bg-gray-900/50">
               <td className={tdClass}>
-                <FavoriteButton name={item.name} isFavorited={!!favorites[item.name]} onToggle={onFavoriteToggle} />
+                <FavoriteButton id={item.id} isFavorited={!!favorites[item.id]} onToggle={onFavoriteToggle} />
               </td>
               <td className={tdClass}>
-                <AmountInput name={item.name} value={amounts[item.name] ?? 0} onChange={onAmountChange} />
+                <AmountInput id={item.id} value={amounts[item.id] ?? 0} onChange={onAmountChange} />
               </td>
               <td className={`${tdClass} font-medium text-gray-100 whitespace-nowrap`}>{item.name}</td>
               {v.propulsionType && <td className={`${tdClass} ${borderLClass}`}>{item.propulsionType}</td>}

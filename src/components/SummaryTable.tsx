@@ -3,7 +3,7 @@ import { ALL_RESOURCES } from '../types';
 import type { GroundFacility, LaunchVehicle, Mission, OrbitalModule, Resources, Spacecraft, TransportableModule } from '../types';
 import { borderLClass, tableClass, tdClass, thClass } from './tableHelpers';
 
-type AnyItem = { name: string; buildCost: Resources; workers?: string; energy?: string };
+type AnyItem = { id: string; name: string; buildCost: Resources; workers?: string; energy?: string };
 
 const CATEGORY_LABEL: Record<string, string> = {
   spacecraft: 'Spacecraft',
@@ -14,6 +14,7 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 interface SummaryRow {
+  id: string;
   name: string;
   category: string;
   amount: number;
@@ -41,11 +42,12 @@ function parseNum(s: string | undefined): number {
 
 function buildRows(items: AnyItem[], category: string, amounts: Record<string, number>): SummaryRow[] {
   return items
-    .filter((item) => (amounts[item.name] ?? 0) > 0)
+    .filter((item) => (amounts[item.id] ?? 0) > 0)
     .map((item) => ({
+      id: item.id,
       name: item.name,
       category,
-      amount: amounts[item.name],
+      amount: amounts[item.id],
       buildCost: item.buildCost,
       workers: parseNum(item.workers),
       energy: parseNum(item.energy),
@@ -115,7 +117,7 @@ export default function SummaryTable({ spacecraft, launchVehicles, groundFacilit
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={`${row.category}-${row.name}`} className="hover:bg-gray-900/50">
+            <tr key={row.id} className="hover:bg-gray-900/50">
               <td className={`${tdClass} font-medium text-gray-100`}>{row.name}</td>
               <td className={`${tdClass} ${borderLClass}`}>{CATEGORY_LABEL[row.category]}</td>
               <td className={`${tdClass} ${borderLClass} tabular-nums`}>{row.amount}</td>
